@@ -4,78 +4,133 @@ import (
 	"github.com/carloscasalar/card-guess/internal/deck"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 	"testing"
 )
 
-func TestDrawCard_should_return_error_when_there_is_no_cards_in_the_pile(t *testing.T) {
-	pile := deck.NewPile()
+var (
+	firstCard  = NewCard("firstCard")
+	secondCard = NewCard("secondCard")
+	thirdCard  = NewCard("thirdCard")
+)
 
-	_, err := pile.DrawCard()
-
-	assert.ErrorIs(t, err, deck.NoMoreCardsInThePile)
+type WhenPileHasNoCardsSuite struct {
+	suite.Suite
+	pile *deck.Pile
 }
 
-func TestDrawCard_should_draw_the_card_when_pile_has_only_one_card(t *testing.T) {
-	as := NewCard("as")
-	pile := deck.NewPile(as)
-
-	card, err := pile.DrawCard()
-	require.NoError(t, err)
-	assert.Equal(t, *card, as)
+func Test_when_pile_has_no_cards(t *testing.T) {
+	suite.Run(t, new(WhenPileHasNoCardsSuite))
 }
 
-func TestDrawCard_should_return_error_when_draw_second_card_when_pile_has_only_one_card(t *testing.T) {
-	as := NewCard("as")
-	pile := deck.NewPile(as)
-
-	_, _ = pile.DrawCard()
-	_, err := pile.DrawCard()
-
-	assert.ErrorIs(t, err, deck.NoMoreCardsInThePile)
+func (s *WhenPileHasNoCardsSuite) SetupTest() {
+	s.pile = deck.NewPile()
 }
 
-func TestDrawCard_on_two_card_pile_first_draw_should_draw_first_card(t *testing.T) {
-	firstCard := NewCard("firstCard")
-	secondCard := NewCard("secondCard")
-	pile := deck.NewPile(firstCard, secondCard)
+func (s *WhenPileHasNoCardsSuite) Test_DrawCard_should_return_error() {
+	_, err := s.pile.DrawCard()
 
-	card, err := pile.DrawCard()
-	require.NoError(t, err)
-	assert.Equal(t, *card, firstCard)
+	assert.ErrorIs(s.T(), err, deck.NoMoreCardsInThePile)
 }
 
-func TestDrawCard_on_two_card_pile_second_draw_should_draw_second_card(t *testing.T) {
-	firstCard := NewCard("firstCard")
-	secondCard := NewCard("secondCard")
-	pile := deck.NewPile(firstCard, secondCard)
+func (s *WhenPileHasNoCardsSuite) Test_Cards_should_return_empty_array() {
+	cards := s.pile.Cards()
 
-	_, _ = pile.DrawCard()
-	card, err := pile.DrawCard()
-	require.NoError(t, err)
-	assert.Equal(t, *card, secondCard)
+	assert.Empty(s.T(), cards)
 }
 
-func TestDrawCard_on_two_card_pile_third_draw_should_return_error(t *testing.T) {
-	firstCard := NewCard("firstCard")
-	secondCard := NewCard("secondCard")
-	pile := deck.NewPile(firstCard, secondCard)
-
-	_, _ = pile.DrawCard()
-	_, _ = pile.DrawCard()
-	_, err := pile.DrawCard()
-
-	assert.ErrorIs(t, err, deck.NoMoreCardsInThePile)
+type WhenPileHasOneCardSuite struct {
+	suite.Suite
+	pile *deck.Pile
 }
 
-func TestCards_should_list_all_cards_of_the_pile_in_order(t *testing.T) {
-	firstCard := NewCard("firstCard")
-	secondCard := NewCard("secondCard")
-	thirdCard := NewCard("thirdCard")
-	pile := deck.NewPile(firstCard, secondCard, thirdCard)
+func Test_when_pile_has_one_card(t *testing.T) {
+	suite.Run(t, new(WhenPileHasOneCardSuite))
+}
 
-	cards := pile.Cards()
+func (s *WhenPileHasOneCardSuite) SetupTest() {
+	s.pile = deck.NewPile(firstCard)
+}
 
-	assert.Equal(t, []deck.Card{firstCard, secondCard, thirdCard}, cards)
+func (s *WhenPileHasOneCardSuite) Test_DrawCard_should_draw_the_card() {
+	card, err := s.pile.DrawCard()
+
+	require.NoError(s.T(), err)
+	assert.Equal(s.T(), *card, firstCard)
+}
+
+func (s *WhenPileHasOneCardSuite) Test_DrawCard_should_return_error_when_draw_second() {
+	_, _ = s.pile.DrawCard()
+	_, err := s.pile.DrawCard()
+
+	assert.ErrorIs(s.T(), err, deck.NoMoreCardsInThePile)
+}
+
+func (s *WhenPileHasOneCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
+	cards := s.pile.Cards()
+
+	assert.Equal(s.T(), []deck.Card{firstCard}, cards)
+}
+
+type WhenPileHasTwoCardSuite struct {
+	suite.Suite
+	pile *deck.Pile
+}
+
+func Test_when_pile_has_two_card(t *testing.T) {
+	suite.Run(t, new(WhenPileHasTwoCardSuite))
+}
+
+func (s *WhenPileHasTwoCardSuite) SetupTest() {
+	s.pile = deck.NewPile(firstCard, secondCard)
+}
+
+func (s *WhenPileHasTwoCardSuite) Test_DrawCard_first_draw_should_draw_first_card() {
+	card, err := s.pile.DrawCard()
+
+	require.NoError(s.T(), err)
+	assert.Equal(s.T(), *card, firstCard)
+}
+
+func (s *WhenPileHasTwoCardSuite) Test_DrawCard_second_draw_should_draw_second_card() {
+	_, _ = s.pile.DrawCard()
+	card, err := s.pile.DrawCard()
+
+	require.NoError(s.T(), err)
+	assert.Equal(s.T(), *card, secondCard)
+}
+
+func (s *WhenPileHasTwoCardSuite) Test_DrawCard_third_draw_should_return_error() {
+	_, _ = s.pile.DrawCard()
+	_, _ = s.pile.DrawCard()
+	_, err := s.pile.DrawCard()
+
+	assert.ErrorIs(s.T(), err, deck.NoMoreCardsInThePile)
+}
+
+func (s *WhenPileHasTwoCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
+	cards := s.pile.Cards()
+
+	assert.Equal(s.T(), []deck.Card{firstCard, secondCard}, cards)
+}
+
+type WhenPileHasThreeCardSuite struct {
+	suite.Suite
+	pile *deck.Pile
+}
+
+func Test_when_pile_has_three_card(t *testing.T) {
+	suite.Run(t, new(WhenPileHasThreeCardSuite))
+}
+
+func (s *WhenPileHasThreeCardSuite) SetupTest() {
+	s.pile = deck.NewPile(firstCard, secondCard, thirdCard)
+}
+
+func (s *WhenPileHasThreeCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
+	cards := s.pile.Cards()
+
+	assert.Equal(s.T(), []deck.Card{firstCard, secondCard, thirdCard}, cards)
 }
 
 func NewCard(name string) deck.Card {
