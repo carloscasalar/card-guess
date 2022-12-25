@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -46,7 +47,7 @@ func run() error {
 		var err error
 		card, sample, err = sample.DrawCard()
 		if err != nil {
-			if err == deck.ErrNoMoreCardsInThePile {
+			if errors.Is(err, deck.ErrNoMoreCardsInThePile) {
 				break
 			}
 			return err
@@ -62,7 +63,7 @@ func run() error {
 	_, result, err := prompt.Run()
 
 	if err != nil {
-		return fmt.Errorf("Prompt failed %w\n", err)
+		return fmt.Errorf("prompt failed %w", err)
 	}
 
 	fmt.Printf("You choose %q\n", result)

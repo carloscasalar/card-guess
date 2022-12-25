@@ -1,6 +1,7 @@
 package deck
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -9,6 +10,7 @@ type Pile interface {
 	DrawCard() (Card, Pile, error)
 	AddCard(card Card) Pile
 	Cards() []Card
+	Size() int
 	String() string
 }
 
@@ -29,7 +31,7 @@ type pile struct {
 func (p pile) DrawCard() (Card, Pile, error) {
 	newFirstCard, newOtherCards, err := p.otherCards.DrawCard()
 	if err != nil {
-		if err == ErrNoMoreCardsInThePile {
+		if errors.Is(err, ErrNoMoreCardsInThePile) {
 			return p.firstCard, emptyPile{}, nil
 		}
 		return nil, p, err
@@ -50,10 +52,14 @@ func (p pile) Cards() []Card {
 	return append([]Card{p.firstCard}, p.otherCards.Cards()...)
 }
 
+func (p pile) Size() int {
+	return p.otherCards.Size() + 1
+}
+
 func (p pile) String() string {
-	var cardStrings []string
-	for _, card := range p.Cards() {
-		cardStrings = append(cardStrings, fmt.Sprintf("%v", card))
+	var cardStrings = make([]string, p.Size())
+	for i, card := range p.Cards() {
+		cardStrings[i] = fmt.Sprintf("%v", card)
 	}
 	return strings.Join(cardStrings, "  ")
 }

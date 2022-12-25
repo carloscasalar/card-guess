@@ -13,9 +13,9 @@ func (m *Mat) PlaceIntoNextPile(card deck.Card) {
 }
 
 func (m *Mat) Piles() []deck.Pile {
-	var piles []deck.Pile
-	for _, pile := range m.piles {
-		piles = append(piles, pile)
+	var piles = make([]deck.Pile, len(m.piles))
+	for i, pile := range m.piles {
+		piles[i] = pile
 	}
 	return piles
 }
