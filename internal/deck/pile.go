@@ -55,5 +55,5 @@ func (p pile) String() string {
 	for _, card := range p.Cards() {
 		cardStrings = append(cardStrings, fmt.Sprintf("%v", card))
 	}
-	return strings.Join(cardStrings[:], " | ")
+	return strings.Join(cardStrings, "  ")
 }

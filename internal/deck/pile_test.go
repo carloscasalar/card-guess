@@ -156,7 +156,7 @@ func (s *WhenPileHasThreeCardSuite) Test_Cards_should_list_all_cards_of_the_pile
 }
 
 func (s *WhenPileHasThreeCardSuite) Test_String_should_contain_all_cards_of_the_pile_in_order() {
-	assert.Equal(s.T(), "firstCard | secondCard | thirdCard", s.pile.String())
+	assert.Equal(s.T(), "firstCard  secondCard  thirdCard", s.pile.String())
 }
 
 func NewCard(name string) deck.Card {
