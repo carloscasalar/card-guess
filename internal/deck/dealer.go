@@ -7,8 +7,10 @@ type Dealer interface {
 	Deal() (Card, error)
 }
 
-type Card interface {
-	String() string
+func NewDealer(numberOfDecks uint8) Dealer {
+	return &dealerAdapter{
+		wrappedDealer: dealer.NewDealer(numberOfDecks),
+	}
 }
 
 type dealerAdapter struct {
@@ -27,10 +29,4 @@ func (d *dealerAdapter) Deal() (Card, error) {
 
 	var cardDealt Card = card
 	return cardDealt, nil
-}
-
-func NewDealer(numberOfDecks uint8) Dealer {
-	return &dealerAdapter{
-		wrappedDealer: dealer.NewDealer(numberOfDecks),
-	}
 }
