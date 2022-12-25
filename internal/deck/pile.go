@@ -5,54 +5,52 @@ import (
 	"strings"
 )
 
-type Pile struct {
-	firstCard  *Card
-	otherCards *Pile
+type Pile interface {
+	DrawCard() (Card, Pile, error)
+	AddCard(card Card) Pile
+	Cards() []Card
+	String() string
 }
 
-func NewPile(cards ...Card) *Pile {
+func NewPile(cards ...Card) Pile {
 	if len(cards) == 0 {
-		return &Pile{}
+		return &emptyPile{}
 	}
-	firstCard := &cards[0]
+	firstCard := cards[0]
 	otherCards := NewPile(cards[1:]...)
-	return &Pile{firstCard, otherCards}
+	return &pile{firstCard, otherCards}
 }
 
-func (p *Pile) DrawCard() (*Card, error) {
-	if p.firstCard != nil {
-		card := p.firstCard
-		p.firstCard, _ = p.otherCards.DrawCard()
-		return card, nil
-	}
-	return nil, ErrNoMoreCardsInThePile
+type pile struct {
+	firstCard  Card
+	otherCards Pile
 }
 
-func (p *Pile) AddCard(card Card) {
-	if p.firstCard == nil {
-		p.firstCard = &card
-		return
+func (p pile) DrawCard() (Card, Pile, error) {
+	newFirstCard, newOtherCards, err := p.otherCards.DrawCard()
+	if err != nil {
+		if err == ErrNoMoreCardsInThePile {
+			return p.firstCard, emptyPile{}, nil
+		}
+		return nil, p, err
 	}
-	if p.otherCards == nil {
-		p.otherCards = NewPile(*p.firstCard)
-		p.firstCard = &card
-		return
-	}
-	p.otherCards.AddCard(*p.firstCard)
-	p.firstCard = &card
+	drawnCard := p.firstCard
+	resultingPile := &pile{newFirstCard, newOtherCards}
+	return drawnCard, resultingPile, nil
 }
 
-func (p *Pile) Cards() []Card {
-	if p.firstCard == nil {
-		return []Card{}
+func (p pile) AddCard(card Card) Pile {
+	return &pile{
+		firstCard:  card,
+		otherCards: p,
 	}
-	if p.otherCards == nil {
-		return []Card{*p.firstCard}
-	}
-	return append([]Card{*p.firstCard}, p.otherCards.Cards()...)
 }
 
-func (p *Pile) String() string {
+func (p pile) Cards() []Card {
+	return append([]Card{p.firstCard}, p.otherCards.Cards()...)
+}
+
+func (p pile) String() string {
 	var cardStrings []string
 	for _, card := range p.Cards() {
 		cardStrings = append(cardStrings, fmt.Sprintf("%v", card))

@@ -19,7 +19,7 @@ var (
 
 type WhenPileHasNoCardsSuite struct {
 	suite.Suite
-	pile *deck.Pile
+	pile deck.Pile
 }
 
 func Test_when_pile_has_no_cards(t *testing.T) {
@@ -31,22 +31,22 @@ func (s *WhenPileHasNoCardsSuite) SetupTest() {
 }
 
 func (s *WhenPileHasNoCardsSuite) Test_DrawCard_should_return_error() {
-	_, err := s.pile.DrawCard()
+	_, _, err := s.pile.DrawCard()
 
 	assert.ErrorIs(s.T(), err, deck.ErrNoMoreCardsInThePile)
 }
 
 func (s *WhenPileHasNoCardsSuite) Test_AddCard_should_add_new_card() {
-	s.pile.AddCard(firstCard)
+	pile := s.pile.AddCard(firstCard)
 
-	assert.Equal(s.T(), s.pile.Cards(), []deck.Card{firstCard})
+	assert.Equal(s.T(), pile.Cards(), []deck.Card{firstCard})
 }
 
 func (s *WhenPileHasNoCardsSuite) Test_AddCard_twice_should_add_two_cards() {
-	s.pile.AddCard(bottomCard)
-	s.pile.AddCard(topCard)
+	pile := s.pile.AddCard(bottomCard)
+	pile = pile.AddCard(topCard)
 
-	assert.Equal(s.T(), s.pile.Cards(), []deck.Card{topCard, bottomCard})
+	assert.Equal(s.T(), pile.Cards(), []deck.Card{topCard, bottomCard})
 }
 
 func (s *WhenPileHasNoCardsSuite) Test_Cards_should_return_empty_array() {
@@ -57,7 +57,7 @@ func (s *WhenPileHasNoCardsSuite) Test_Cards_should_return_empty_array() {
 
 type WhenPileHasOneCardSuite struct {
 	suite.Suite
-	pile *deck.Pile
+	pile deck.Pile
 }
 
 func Test_when_pile_has_one_card(t *testing.T) {
@@ -69,15 +69,15 @@ func (s *WhenPileHasOneCardSuite) SetupTest() {
 }
 
 func (s *WhenPileHasOneCardSuite) Test_DrawCard_should_draw_the_card() {
-	card, err := s.pile.DrawCard()
+	card, _, err := s.pile.DrawCard()
 
 	require.NoError(s.T(), err)
-	assert.Equal(s.T(), *card, firstCard)
+	assert.Equal(s.T(), card, firstCard)
 }
 
 func (s *WhenPileHasOneCardSuite) Test_DrawCard_should_return_error_when_draw_second() {
-	_, _ = s.pile.DrawCard()
-	_, err := s.pile.DrawCard()
+	_, pile, _ := s.pile.DrawCard()
+	_, _, err := pile.DrawCard()
 
 	assert.ErrorIs(s.T(), err, deck.ErrNoMoreCardsInThePile)
 }
@@ -90,7 +90,7 @@ func (s *WhenPileHasOneCardSuite) Test_Cards_should_list_all_cards_of_the_pile_i
 
 type WhenPileHasTwoCardSuite struct {
 	suite.Suite
-	pile *deck.Pile
+	pile deck.Pile
 }
 
 func Test_when_pile_has_two_card(t *testing.T) {
@@ -102,24 +102,24 @@ func (s *WhenPileHasTwoCardSuite) SetupTest() {
 }
 
 func (s *WhenPileHasTwoCardSuite) Test_DrawCard_first_draw_should_draw_first_card() {
-	card, err := s.pile.DrawCard()
+	card, _, err := s.pile.DrawCard()
 
 	require.NoError(s.T(), err)
-	assert.Equal(s.T(), *card, firstCard)
+	assert.Equal(s.T(), card, firstCard)
 }
 
 func (s *WhenPileHasTwoCardSuite) Test_DrawCard_second_draw_should_draw_second_card() {
-	_, _ = s.pile.DrawCard()
-	card, err := s.pile.DrawCard()
+	_, pile, _ := s.pile.DrawCard()
+	card, _, err := pile.DrawCard()
 
 	require.NoError(s.T(), err)
-	assert.Equal(s.T(), *card, secondCard)
+	assert.Equal(s.T(), card, secondCard)
 }
 
 func (s *WhenPileHasTwoCardSuite) Test_DrawCard_third_draw_should_return_error() {
-	_, _ = s.pile.DrawCard()
-	_, _ = s.pile.DrawCard()
-	_, err := s.pile.DrawCard()
+	_, pile, _ := s.pile.DrawCard()
+	_, pile, _ = pile.DrawCard()
+	_, _, err := pile.DrawCard()
 
 	assert.ErrorIs(s.T(), err, deck.ErrNoMoreCardsInThePile)
 }
@@ -132,7 +132,7 @@ func (s *WhenPileHasTwoCardSuite) Test_Cards_should_list_all_cards_of_the_pile_i
 
 type WhenPileHasThreeCardSuite struct {
 	suite.Suite
-	pile *deck.Pile
+	pile deck.Pile
 }
 
 func Test_when_pile_has_three_card(t *testing.T) {
@@ -144,9 +144,9 @@ func (s *WhenPileHasThreeCardSuite) SetupTest() {
 }
 
 func (s *WhenPileHasThreeCardSuite) Test_AddCard_should_add_the_card_on_top_of_the_pile() {
-	s.pile.AddCard(topCard)
+	pile := s.pile.AddCard(topCard)
 
-	assert.Equal(s.T(), []deck.Card{topCard, firstCard, secondCard, thirdCard}, s.pile.Cards())
+	assert.Equal(s.T(), []deck.Card{topCard, firstCard, secondCard, thirdCard}, pile.Cards())
 }
 
 func (s *WhenPileHasThreeCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
