@@ -1,5 +1,5 @@
-github.com/carloscasalar/go-cards v1.0.0 h1:ppoMIVN5tnEUp0WM6nVpGVQ/NLG+vh8HRnJ2BfYCUis=
-github.com/carloscasalar/go-cards v1.0.0/go.mod h1:YHwmfVAy+MaZB6gY7nr8xyxjns/qFBNEABmc3tl1EcA=
+github.com/carloscasalar/go-cards/v2 v2.0.0 h1:gRC6EiESrvWDVkXGKlHEHqYGxN+F2HKn2kMgnGYtJbg=
+github.com/carloscasalar/go-cards/v2 v2.0.0/go.mod h1:4R4r8DfpTdWajph+UzXTIl5udpBhs5VVdjXBhQXxpXo=
 github.com/chzyer/logex v1.1.10 h1:Swpa1K6QvQznwJRcfTfQJmTE72DqScAa40E+fbHEXEE=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e h1:fY5BOSpyZCqRo5OhCuC+XN+r/bBCmeuuJtjz+bCNIf8=

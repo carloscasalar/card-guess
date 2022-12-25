@@ -1,6 +1,6 @@
 package deck
 
-import "github.com/carloscasalar/go-cards/pkg/dealer"
+import "github.com/carloscasalar/go-cards/v2/pkg/dealer"
 
 type Dealer interface {
 	ShuffleCards()
@@ -27,6 +27,6 @@ func (d *dealerAdapter) Deal() (Card, error) {
 		return nil, err
 	}
 
-	var cardDealt Card = card
+	var cardDealt Card = *card
 	return cardDealt, nil
 }

@@ -3,7 +3,7 @@ module github.com/carloscasalar/card-guess
 go 1.19
 
 require (
-	github.com/carloscasalar/go-cards v1.0.0
+	github.com/carloscasalar/go-cards/v2 v2.0.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/stretchr/testify v1.8.1
 )
