@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	firstCard  = NewCard("firstCard")
-	secondCard = NewCard("secondCard")
-	thirdCard  = NewCard("thirdCard")
-	topCard    = NewCard("topCard")
-	bottomCard = NewCard("bottomCard")
+	firstCard   = NewCard("firstCard")
+	secondCard  = NewCard("secondCard")
+	thirdCard   = NewCard("thirdCard")
+	topCard     = NewCard("topCard")
+	aMiddleCard = NewCard("aMiddleCard")
+	bottomCard  = NewCard("bottomCard")
 )
 
 type WhenPileHasNoCardsSuite struct {
@@ -147,6 +148,14 @@ func (s *WhenPileHasThreeCardSuite) Test_AddCard_should_add_the_card_on_top_of_t
 	pile := s.pile.AddCard(topCard)
 
 	assert.Equal(s.T(), []deck.Card{topCard, firstCard, secondCard, thirdCard}, pile.Cards())
+}
+
+func (s *WhenPileHasThreeCardSuite) Test_StackOnTop_should_put_the_whole_pile_on_top() {
+	bottomPile := deck.NewPile(aMiddleCard, bottomCard)
+	resultingPile := s.pile.StackOnTopOf(bottomPile)
+
+	expectedPile := deck.NewPile(firstCard, secondCard, thirdCard, aMiddleCard, bottomCard)
+	assert.Equal(s.T(), expectedPile.String(), resultingPile.String())
 }
 
 func (s *WhenPileHasThreeCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {

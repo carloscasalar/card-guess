@@ -13,6 +13,10 @@ func (e emptyPile) AddCard(card Card) Pile {
 	}
 }
 
+func (e emptyPile) StackOnTopOf(pile Pile) Pile {
+	return pile
+}
+
 func (e emptyPile) Cards() []Card {
 	return []Card{}
 }

@@ -9,6 +9,7 @@ import (
 type Pile interface {
 	DrawCard() (Card, Pile, error)
 	AddCard(card Card) Pile
+	StackOnTopOf(Pile) Pile
 	Cards() []Card
 	Size() int
 	String() string
@@ -46,6 +47,12 @@ func (p pile) AddCard(card Card) Pile {
 		firstCard:  card,
 		otherCards: p,
 	}
+}
+
+func (p pile) StackOnTopOf(otherPile Pile) Pile {
+	cards := append(p.Cards(), otherPile.Cards()...)
+
+	return NewPile(cards...)
 }
 
 func (p pile) Cards() []Card {
