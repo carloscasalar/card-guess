@@ -20,7 +20,7 @@ func (p *Pile) DrawCard() (*Card, error) {
 		p.firstCard, _ = p.otherCards.DrawCard()
 		return card, nil
 	}
-	return nil, NoMoreCardsInThePile
+	return nil, ErrNoMoreCardsInThePile
 }
 
 func (p *Pile) AddCard(card Card) {

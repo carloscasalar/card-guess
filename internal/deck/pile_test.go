@@ -32,7 +32,7 @@ func (s *WhenPileHasNoCardsSuite) SetupTest() {
 func (s *WhenPileHasNoCardsSuite) Test_DrawCard_should_return_error() {
 	_, err := s.pile.DrawCard()
 
-	assert.ErrorIs(s.T(), err, deck.NoMoreCardsInThePile)
+	assert.ErrorIs(s.T(), err, deck.ErrNoMoreCardsInThePile)
 }
 
 func (s *WhenPileHasNoCardsSuite) Test_AddCard_should_add_new_card() {
@@ -78,7 +78,7 @@ func (s *WhenPileHasOneCardSuite) Test_DrawCard_should_return_error_when_draw_se
 	_, _ = s.pile.DrawCard()
 	_, err := s.pile.DrawCard()
 
-	assert.ErrorIs(s.T(), err, deck.NoMoreCardsInThePile)
+	assert.ErrorIs(s.T(), err, deck.ErrNoMoreCardsInThePile)
 }
 
 func (s *WhenPileHasOneCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
@@ -120,7 +120,7 @@ func (s *WhenPileHasTwoCardSuite) Test_DrawCard_third_draw_should_return_error()
 	_, _ = s.pile.DrawCard()
 	_, err := s.pile.DrawCard()
 
-	assert.ErrorIs(s.T(), err, deck.NoMoreCardsInThePile)
+	assert.ErrorIs(s.T(), err, deck.ErrNoMoreCardsInThePile)
 }
 
 func (s *WhenPileHasTwoCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
