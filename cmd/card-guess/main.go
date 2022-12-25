@@ -109,9 +109,9 @@ func splitIntoThreePiles(sample deck.Pile) (*trick.Mat, error) {
 			}
 			return nil, err
 		}
-		mat.PlaceIntoNextPile(card)
+		mat = mat.PlaceIntoNextPile(card)
 	}
-	return mat, nil
+	return &mat, nil
 }
 
 func askForThePileWhereTheCardIs(piles []trick.PileInMat) (trick.PileHolder, error) {

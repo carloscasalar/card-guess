@@ -9,13 +9,13 @@ import (
 )
 
 func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
-	mat := trick.NewMat()
-	mat.PlaceIntoNextPile(card("First Pile, Bottom"))
-	mat.PlaceIntoNextPile(card("Second Pile, Bottom"))
-	mat.PlaceIntoNextPile(card("Third Pile, Bottom"))
-	mat.PlaceIntoNextPile(card("First Pile, Top"))
-	mat.PlaceIntoNextPile(card("Second Pile, Top"))
-	mat.PlaceIntoNextPile(card("Third Pile, Top"))
+	mat := trick.NewMat().
+		PlaceIntoNextPile(card("First Pile, Bottom")).
+		PlaceIntoNextPile(card("Second Pile, Bottom")).
+		PlaceIntoNextPile(card("Third Pile, Bottom")).
+		PlaceIntoNextPile(card("First Pile, Top")).
+		PlaceIntoNextPile(card("Second Pile, Top")).
+		PlaceIntoNextPile(card("Third Pile, Top"))
 
 	pile := mat.JoinWithPileInTheMiddle(trick.FirstPile)
 
