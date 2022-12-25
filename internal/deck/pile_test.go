@@ -12,6 +12,8 @@ var (
 	firstCard  = NewCard("firstCard")
 	secondCard = NewCard("secondCard")
 	thirdCard  = NewCard("thirdCard")
+	topCard    = NewCard("topCard")
+	bottomCard = NewCard("bottomCard")
 )
 
 type WhenPileHasNoCardsSuite struct {
@@ -31,6 +33,19 @@ func (s *WhenPileHasNoCardsSuite) Test_DrawCard_should_return_error() {
 	_, err := s.pile.DrawCard()
 
 	assert.ErrorIs(s.T(), err, deck.NoMoreCardsInThePile)
+}
+
+func (s *WhenPileHasNoCardsSuite) Test_AddCard_should_add_new_card() {
+	s.pile.AddCard(firstCard)
+
+	assert.Equal(s.T(), s.pile.Cards(), []deck.Card{firstCard})
+}
+
+func (s *WhenPileHasNoCardsSuite) Test_AddCard_twice_should_add_two_cards() {
+	s.pile.AddCard(bottomCard)
+	s.pile.AddCard(topCard)
+
+	assert.Equal(s.T(), s.pile.Cards(), []deck.Card{topCard, bottomCard})
 }
 
 func (s *WhenPileHasNoCardsSuite) Test_Cards_should_return_empty_array() {
@@ -125,6 +140,12 @@ func Test_when_pile_has_three_card(t *testing.T) {
 
 func (s *WhenPileHasThreeCardSuite) SetupTest() {
 	s.pile = deck.NewPile(firstCard, secondCard, thirdCard)
+}
+
+func (s *WhenPileHasThreeCardSuite) Test_AddCard_should_add_the_card_on_top_of_the_pile() {
+	s.pile.AddCard(topCard)
+
+	assert.Equal(s.T(), []deck.Card{topCard, firstCard, secondCard, thirdCard}, s.pile.Cards())
 }
 
 func (s *WhenPileHasThreeCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {

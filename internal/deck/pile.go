@@ -23,9 +23,26 @@ func (p *Pile) DrawCard() (*Card, error) {
 	return nil, NoMoreCardsInThePile
 }
 
+func (p *Pile) AddCard(card Card) {
+	if p.firstCard == nil {
+		p.firstCard = &card
+		return
+	}
+	if p.otherCards == nil {
+		p.otherCards = NewPile(*p.firstCard)
+		p.firstCard = &card
+		return
+	}
+	p.otherCards.AddCard(*p.firstCard)
+	p.firstCard = &card
+}
+
 func (p *Pile) Cards() []Card {
 	if p.firstCard == nil {
 		return []Card{}
+	}
+	if p.otherCards == nil {
+		return []Card{*p.firstCard}
 	}
 	return append([]Card{*p.firstCard}, p.otherCards.Cards()...)
 }
