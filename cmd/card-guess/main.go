@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/manifoldco/promptui"
 
@@ -41,6 +42,62 @@ func run() error {
 	fmt.Println("Then press enter to continue")
 	_, _ = fmt.Scanln()
 
+	mat, err := splitIntoThreePiles(sample)
+	if err != nil {
+		return err
+	}
+
+	pileHolder, err := askForThePileWhereTheCardIs(mat.Piles())
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("I've put the pile you choosed, the %v, between the other two and splitted again into three piles:\n", pileHolder)
+	sample = mat.JoinWithPileInTheMiddle(pileHolder)
+	mat, err = splitIntoThreePiles(sample)
+	if err != nil {
+		return err
+	}
+	pileHolder, err = askForThePileWhereTheCardIs(mat.Piles())
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("For the last time I've put the pile you choosed, the %v, between the other two and splitted again into three piles:\n", pileHolder)
+	sample = mat.JoinWithPileInTheMiddle(pileHolder)
+	mat, err = splitIntoThreePiles(sample)
+	if err != nil {
+		return err
+	}
+	pileHolder, err = askForThePileWhereTheCardIs(mat.Piles())
+	if err != nil {
+		return err
+	}
+
+	const suspenseTime = 1 * time.Second
+	fmt.Print("Ok, your card is..")
+	time.Sleep(suspenseTime)
+	fmt.Print(".")
+	time.Sleep(suspenseTime)
+	fmt.Print(".")
+	time.Sleep(suspenseTime)
+	guessedCard := takeTheFourthCard(mat.GetPile(pileHolder))
+	fmt.Printf("... %v !\n", guessedCard)
+
+	return nil
+}
+
+func takeTheFourthCard(pile deck.Pile) deck.Card {
+	var card deck.Card
+	const fourth = 4
+	for i := 0; i < fourth; i++ {
+		card, pile, _ = pile.DrawCard()
+	}
+
+	return card
+}
+
+func splitIntoThreePiles(sample deck.Pile) (*trick.Mat, error) {
 	mat := trick.NewMat()
 	for {
 		var card deck.Card
@@ -50,23 +107,32 @@ func run() error {
 			if errors.Is(err, deck.ErrNoMoreCardsInThePile) {
 				break
 			}
-			return err
+			return nil, err
 		}
 		mat.PlaceIntoNextPile(card)
 	}
+	return mat, nil
+}
+
+func askForThePileWhereTheCardIs(piles []trick.PileInMat) (trick.PileHolder, error) {
+	templates := &promptui.SelectTemplates{
+		Label:    "{{ .Pile }}?",
+		Active:   "-> {{ .Pile | cyan }}",
+		Inactive: "   {{ .Pile | cyan }}",
+		Selected: "{{ .Holder | red | cyan }}, {{ .Pile | cyan }}",
+	}
 
 	prompt := promptui.Select{
-		Label: "Select the pile where your card is",
-		Items: mat.Piles(),
+		Label:     "Select the pile where your card is",
+		Items:     piles,
+		Templates: templates,
 	}
 
-	_, result, err := prompt.Run()
+	i, _, err := prompt.Run()
 
 	if err != nil {
-		return fmt.Errorf("prompt failed %w", err)
+		return -1, fmt.Errorf("failed to retrieve your chosen pile %w", err)
 	}
 
-	fmt.Printf("You choose %q\n", result)
-
-	return nil
+	return piles[i].Holder, nil
 }

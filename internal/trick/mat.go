@@ -3,30 +3,42 @@ package trick
 import "github.com/carloscasalar/card-guess/internal/deck"
 
 type Mat struct {
-	piles        map[holder]deck.Pile
-	incomingPile holder
+	piles        map[PileHolder]deck.Pile
+	incomingPile PileHolder
 }
 
 func (m *Mat) PlaceIntoNextPile(card deck.Card) {
 	m.piles[m.incomingPile] = m.piles[m.incomingPile].AddCard(card)
-	m.incomingPile = m.incomingPile.NextPile()
+	m.incomingPile = m.incomingPile.nextPile()
 }
 
-func (m *Mat) Piles() []deck.Pile {
-	var piles = make([]deck.Pile, len(m.piles))
-	for i, pile := range m.piles {
-		piles[i] = pile
+func (m *Mat) JoinWithPileInTheMiddle(holder PileHolder) deck.Pile {
+	firstHolder := holder.nextPile()
+	pile := m.piles[firstHolder].StackOnTopOf(m.piles[holder])
+	lastHolder := firstHolder.nextPile()
+	pile = pile.StackOnTopOf(m.piles[lastHolder])
+	return pile
+}
+
+func (m *Mat) Piles() []PileInMat {
+	var piles = make([]PileInMat, len(m.piles))
+	for holder, pile := range m.piles {
+		piles[holder] = PileInMat{holder, pile}
 	}
 	return piles
 }
 
+func (m *Mat) GetPile(holder PileHolder) deck.Pile {
+	return m.piles[holder]
+}
+
 func NewMat() *Mat {
 	return &Mat{
-		piles: map[holder]deck.Pile{
-			firstPile:  deck.NewPile(),
-			secondPile: deck.NewPile(),
-			thirdPile:  deck.NewPile(),
+		piles: map[PileHolder]deck.Pile{
+			FirstPile:  deck.NewPile(),
+			SecondPile: deck.NewPile(),
+			ThirdPile:  deck.NewPile(),
 		},
-		incomingPile: firstPile,
+		incomingPile: FirstPile,
 	}
 }
