@@ -1,5 +1,10 @@
 package deck
 
+import (
+	"fmt"
+	"strings"
+)
+
 type Pile struct {
 	firstCard  *Card
 	otherCards *Pile
@@ -45,4 +50,12 @@ func (p *Pile) Cards() []Card {
 		return []Card{*p.firstCard}
 	}
 	return append([]Card{*p.firstCard}, p.otherCards.Cards()...)
+}
+
+func (p *Pile) String() string {
+	var cardStrings []string
+	for _, card := range p.Cards() {
+		cardStrings = append(cardStrings, fmt.Sprintf("%v", card))
+	}
+	return strings.Join(cardStrings[:], " | ")
 }
