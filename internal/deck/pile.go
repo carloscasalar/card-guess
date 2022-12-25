@@ -1,13 +1,14 @@
 package deck
 
 type Pile struct {
-	card *Card
+	firstCard  *Card
+	otherCards *Pile
 }
 
 func (p *Pile) DrawCard() (*Card, error) {
-	if p.card != nil {
-		card := p.card
-		p.card = nil
+	if p.firstCard != nil {
+		card := p.firstCard
+		p.firstCard, _ = p.otherCards.DrawCard()
 		return card, nil
 	}
 	return nil, NoMoreCardsInThePile
@@ -17,5 +18,7 @@ func NewPile(cards ...Card) *Pile {
 	if len(cards) == 0 {
 		return &Pile{}
 	}
-	return &Pile{&cards[0]}
+	firstCard := &cards[0]
+	otherCards := NewPile(cards[1:]...)
+	return &Pile{firstCard, otherCards}
 }
