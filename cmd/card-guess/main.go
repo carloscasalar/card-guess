@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/carloscasalar/card-guess/internal/deck"
 	"os"
+
+	"github.com/carloscasalar/card-guess/internal/deck"
 )
 
 const TrickSampleSize = 21
