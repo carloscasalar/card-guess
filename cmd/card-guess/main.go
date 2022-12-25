@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+const TrickSampleSize = 21
+
 func main() {
 	if err := run(); err != nil {
 		fmt.Fprintf(os.Stderr, "an error occurred: %s\n", err)
@@ -18,12 +20,11 @@ func run() error {
 
 	dealer.ShuffleCards()
 
-	cards := make([]deck.Card, 21)
+	cards := make([]deck.Card, TrickSampleSize)
 	for i := 0; i < 21; i++ {
 		card, err := dealer.Deal()
 		if err != nil {
-			fmt.Printf("Unexpected error while dealing the card %vth", i+1)
-			os.Exit(1)
+			return fmt.Errorf("unexpected error while dealing the card %vth: %w", i+1, err)
 		}
 		cards[i] = card
 	}
