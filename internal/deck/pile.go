@@ -5,6 +5,15 @@ type Pile struct {
 	otherCards *Pile
 }
 
+func NewPile(cards ...Card) *Pile {
+	if len(cards) == 0 {
+		return &Pile{}
+	}
+	firstCard := &cards[0]
+	otherCards := NewPile(cards[1:]...)
+	return &Pile{firstCard, otherCards}
+}
+
 func (p *Pile) DrawCard() (*Card, error) {
 	if p.firstCard != nil {
 		card := p.firstCard
@@ -14,11 +23,9 @@ func (p *Pile) DrawCard() (*Card, error) {
 	return nil, NoMoreCardsInThePile
 }
 
-func NewPile(cards ...Card) *Pile {
-	if len(cards) == 0 {
-		return &Pile{}
+func (p *Pile) Cards() []Card {
+	if p.firstCard == nil {
+		return []Card{}
 	}
-	firstCard := &cards[0]
-	otherCards := NewPile(cards[1:]...)
-	return &Pile{firstCard, otherCards}
+	return append([]Card{*p.firstCard}, p.otherCards.Cards()...)
 }

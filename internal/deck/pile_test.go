@@ -67,6 +67,17 @@ func TestDrawCard_on_two_card_pile_third_draw_should_return_error(t *testing.T) 
 	assert.ErrorIs(t, err, deck.NoMoreCardsInThePile)
 }
 
+func TestCards_should_list_all_cards_of_the_pile_in_order(t *testing.T) {
+	firstCard := NewCard("firstCard")
+	secondCard := NewCard("secondCard")
+	thirdCard := NewCard("thirdCard")
+	pile := deck.NewPile(firstCard, secondCard, thirdCard)
+
+	cards := pile.Cards()
+
+	assert.Equal(t, []deck.Card{firstCard, secondCard, thirdCard}, cards)
+}
+
 func NewCard(name string) deck.Card {
 	return &CardStub{name}
 }
