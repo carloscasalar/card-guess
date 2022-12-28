@@ -3,14 +3,13 @@ package trick
 import "github.com/carloscasalar/card-guess/internal/deck"
 
 type Mat struct {
-	piles        map[PileHolder]deck.Pile
-	incomingPile PileHolder
+	piles map[PileHolder]deck.Pile
 }
 
 func (m Mat) PlaceIntoNextPile(card deck.Card) Mat {
 	mat := m.copy()
-	mat.piles[m.incomingPile] = mat.piles[m.incomingPile].AddCard(card)
-	mat.incomingPile = m.incomingPile.nextPile()
+	nextPile := mat.nextPile()
+	mat.piles[nextPile] = mat.piles[nextPile].AddCard(card)
 	return mat
 }
 
@@ -40,8 +39,23 @@ func (m Mat) copy() Mat {
 	piles[SecondPile] = m.piles[SecondPile]
 	piles[ThirdPile] = m.piles[ThirdPile]
 
-	incomingPile := m.incomingPile
-	return Mat{piles, incomingPile}
+	return Mat{piles}
+}
+
+func (m Mat) nextPile() PileHolder {
+	lessCardPile := ThirdPile
+	minPileSize := m.piles[ThirdPile].Size()
+
+	holder := FirstPile
+	for {
+		pileSize := m.piles[holder].Size()
+		if pileSize <= minPileSize {
+			lessCardPile = holder
+			break
+		}
+		holder = holder.nextPile()
+	}
+	return lessCardPile
 }
 
 func NewMat() Mat {
@@ -51,6 +65,5 @@ func NewMat() Mat {
 			SecondPile: deck.NewPile(),
 			ThirdPile:  deck.NewPile(),
 		},
-		incomingPile: FirstPile,
 	}
 }
