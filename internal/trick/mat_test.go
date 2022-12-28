@@ -124,6 +124,19 @@ func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
 	assert.Equal(t, expectedPile.String(), pile.String())
 }
 
+func TestPiles_should_return_piles_in_mat_with_each_holder(t *testing.T) {
+	mat := trick.NewMat()
+
+	piles := mat.Piles()
+
+	expectedPiles := []trick.PileInMat{
+		{trick.FirstPile, deck.NewPile()},
+		{trick.SecondPile, deck.NewPile()},
+		{trick.ThirdPile, deck.NewPile()},
+	}
+	assert.Equal(t, expectedPiles, piles)
+}
+
 func newMatWithCards(numberOfCards int) trick.Mat {
 	mat := trick.NewMat()
 	for i := 0; i < numberOfCards; i++ {
