@@ -8,20 +8,10 @@ type Mat struct {
 }
 
 func (m Mat) PlaceIntoNextPile(card deck.Card) Mat {
-	newPiles := make(map[PileHolder]deck.Pile)
-
-	currentPile := m.incomingPile
-	nextPile := currentPile.nextPile()
-	lastPile := nextPile.nextPile()
-
-	newPiles[currentPile] = m.piles[currentPile].AddCard(card)
-	newPiles[nextPile] = m.piles[nextPile]
-	newPiles[lastPile] = m.piles[lastPile]
-
-	return Mat{
-		piles:        newPiles,
-		incomingPile: nextPile,
-	}
+	mat := m.copy()
+	mat.piles[m.incomingPile] = mat.piles[m.incomingPile].AddCard(card)
+	mat.incomingPile = m.incomingPile.nextPile()
+	return mat
 }
 
 func (m Mat) JoinWithPileInTheMiddle(holder PileHolder) deck.Pile {
@@ -42,6 +32,16 @@ func (m Mat) Piles() []PileInMat {
 
 func (m Mat) GetPile(holder PileHolder) deck.Pile {
 	return m.piles[holder]
+}
+
+func (m Mat) copy() Mat {
+	piles := make(map[PileHolder]deck.Pile)
+	piles[FirstPile] = m.piles[FirstPile]
+	piles[SecondPile] = m.piles[SecondPile]
+	piles[ThirdPile] = m.piles[ThirdPile]
+
+	incomingPile := m.incomingPile
+	return Mat{piles, incomingPile}
 }
 
 func NewMat() Mat {
