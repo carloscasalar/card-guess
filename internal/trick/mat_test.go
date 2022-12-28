@@ -11,6 +11,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewMat_should_crate_a_mat_with_three_empty_piles(t *testing.T) {
+	mat := trick.NewMat()
+
+	assert.Len(t, mat.GetPile(trick.FirstPile).Cards(), 0)
+	assert.Len(t, mat.GetPile(trick.SecondPile).Cards(), 0)
+	assert.Len(t, mat.GetPile(trick.ThirdPile).Cards(), 0)
+}
+
 func TestMat_PlaceIntoNextPile_should_put_first_card_in_first_pile(t *testing.T) {
 	mat := trick.NewMat()
 
@@ -44,12 +52,12 @@ func TestMat_PlaceIntoNextPile_should_put_third_card_in_third_pile(t *testing.T)
 func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 	mat := trick.NewMat()
 
-	mat = mat.PlaceIntoNextPile(card("first card"))
-	mat = mat.PlaceIntoNextPile(card("second card"))
-	mat = mat.PlaceIntoNextPile(card("third card"))
-	mat = mat.PlaceIntoNextPile(card("fourth card"))
-	mat = mat.PlaceIntoNextPile(card("fifth card"))
-	mat = mat.PlaceIntoNextPile(card("sixth card"))
+	mat = mat.PlaceIntoNextPile(card("first card")).
+		PlaceIntoNextPile(card("second card")).
+		PlaceIntoNextPile(card("third card")).
+		PlaceIntoNextPile(card("fourth card")).
+		PlaceIntoNextPile(card("fifth card")).
+		PlaceIntoNextPile(card("sixth card"))
 
 	topCardCases := map[string]struct {
 		holder          trick.PileHolder
