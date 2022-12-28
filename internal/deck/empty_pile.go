@@ -8,7 +8,7 @@ func (e emptyPile) DrawCard() (Card, Pile, error) {
 
 func (e emptyPile) AddCard(card Card) Pile {
 	return &pile{
-		firstCard:  card,
+		topCard:    card,
 		otherCards: emptyPile{},
 	}
 }

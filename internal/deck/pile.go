@@ -25,7 +25,7 @@ func NewPile(cards ...Card) Pile {
 }
 
 type pile struct {
-	firstCard  Card
+	topCard    Card
 	otherCards Pile
 }
 
@@ -33,18 +33,18 @@ func (p pile) DrawCard() (Card, Pile, error) {
 	newFirstCard, newOtherCards, err := p.otherCards.DrawCard()
 	if err != nil {
 		if errors.Is(err, ErrNoMoreCardsInThePile) {
-			return p.firstCard, emptyPile{}, nil
+			return p.topCard, emptyPile{}, nil
 		}
 		return nil, p, err
 	}
-	drawnCard := p.firstCard
+	drawnCard := p.topCard
 	resultingPile := &pile{newFirstCard, newOtherCards}
 	return drawnCard, resultingPile, nil
 }
 
 func (p pile) AddCard(card Card) Pile {
 	return &pile{
-		firstCard:  card,
+		topCard:    card,
 		otherCards: p,
 	}
 }
@@ -56,7 +56,7 @@ func (p pile) StackOnTopOf(otherPile Pile) Pile {
 }
 
 func (p pile) Cards() []Card {
-	return append([]Card{p.firstCard}, p.otherCards.Cards()...)
+	return append([]Card{p.topCard}, p.otherCards.Cards()...)
 }
 
 func (p pile) Size() int {
