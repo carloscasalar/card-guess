@@ -85,7 +85,6 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 }
 
 func TestMat_PlaceIntoNextPile_should_not_mute_the_mat(t *testing.T) {
-	t.Skip("until business logic of the method is fully tested")
 	mat := trick.NewMat()
 
 	mat.PlaceIntoNextPile(card("a card"))
