@@ -16,7 +16,7 @@ make help
 
 ## Run
 
-To run the game type
+To run the game
 
 ```bash
 make run
