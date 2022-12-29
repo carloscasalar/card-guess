@@ -1,27 +1,27 @@
 package deck
 
-import "github.com/carloscasalar/go-cards/v2/pkg/dealer"
+import dealerlib "github.com/carloscasalar/go-cards/v2/pkg/dealer"
 
 type Dealer interface {
 	ShuffleCards()
 	Deal() (Card, error)
 }
 
-func NewDealer(numberOfDecks uint8) Dealer {
-	return &dealerAdapter{
-		wrappedDealer: dealer.NewDealer(numberOfDecks),
+func NewDealer() Dealer {
+	return &dealer{
+		wrappedDealer: dealerlib.NewDealer(1),
 	}
 }
 
-type dealerAdapter struct {
-	wrappedDealer *dealer.Dealer
+type dealer struct {
+	wrappedDealer *dealerlib.Dealer
 }
 
-func (d *dealerAdapter) ShuffleCards() {
+func (d *dealer) ShuffleCards() {
 	d.wrappedDealer.ShuffleCards()
 }
 
-func (d *dealerAdapter) Deal() (Card, error) {
+func (d *dealer) Deal() (Card, error) {
 	card, err := d.wrappedDealer.Deal()
 	if err != nil {
 		return nil, err

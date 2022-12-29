@@ -23,7 +23,7 @@ func main() {
 }
 
 func run() error {
-	dealer := deck.NewDealer(1)
+	dealer := deck.NewDealer()
 
 	dealer.ShuffleCards()
 
