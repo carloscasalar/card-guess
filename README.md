@@ -4,6 +4,8 @@
 
 This game will guess any card you choose between a random set of 21 cards.
 
+![](demo/demo.gif)
+
 The project uses `make` to make your life easier. If you're not familiar with Makefiles you can take a look at [this quickstart guide](https://makefiletutorial.com).
 
 Whenever you need help regarding the available actions, just use the following command.

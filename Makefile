@@ -4,6 +4,7 @@ PWD = $(shell pwd)
 # constants
 GOLANGCI_VERSION = 1.50.1
 DOCKER_REPO = card-guess
+DOCKER_DEMO_SAVER = card-guess-demo-saver
 DOCKER_TAG = latest
 
 all: git-hooks  tidy ## Initializes all tools
@@ -28,6 +29,12 @@ run: fmt ## Run the trick
 
 run-fixed-initial-set: fmt ## Run the trick and don't shuffle cards before the initial draw
 	@go run ./cmd/card-guess/main.go -shuffle-before-initial-sample=false
+
+run-docker: fmt build docker ## Runs the trick inside docker
+	docker run --rm -it $(DOCKER_REPO):$(DOCKER_TAG)
+
+save-demo-gif: build-demo-saver # Generates a demo gif
+	docker run --rm -v ${PWD}/demo:/demo $(DOCKER_DEMO_SAVER):$(DOCKER_TAG)
 
 test-build: ## Tests whether the code compiles
 	@go build -o /dev/null ./...
@@ -73,6 +80,10 @@ clean: ## Cleans up everything
 
 docker: ## Builds docker image
 	docker buildx build -t $(DOCKER_REPO):$(DOCKER_TAG) .
+
+build-demo-saver: build ## Builds the demo-saver image
+	chmod u+x demo/save.sh
+	docker buildx build -t $(DOCKER_DEMO_SAVER):$(DOCKER_TAG) -f Dockerfile.demo .
 
 ci: lint-reports test-reports ## Executes lint and test and generates reports
 
