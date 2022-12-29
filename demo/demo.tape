@@ -26,12 +26,12 @@ Down 1
 Sleep 1s
 Enter
 
-Sleep 500ms
+Sleep 1s
 Down 1
 Sleep 1s
 Enter
 
-Sleep 500ms
+Sleep 1s
 Down 1
 Sleep 1s
 Down 1
