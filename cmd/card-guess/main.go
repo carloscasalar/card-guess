@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"time"
@@ -23,9 +24,18 @@ func main() {
 }
 
 func run() error {
-	dealer := deck.NewDealer()
+	mustShuffle := flag.Bool("shuffle-before-initial-sample", true, "Tells if you want to shuffle before drawing the initial set of cards")
+	flag.Parse()
 
-	dealer.ShuffleCards()
+	if mustShuffle == nil {
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
+
+	dealer := deck.NewDealer()
+	if *mustShuffle {
+		dealer.ShuffleCards()
+	}
 
 	sample := deck.NewPile()
 	for i := 0; i < TrickSampleSize; i++ {
@@ -74,17 +84,21 @@ func run() error {
 		return err
 	}
 
-	const suspenseTime = 1 * time.Second
 	fmt.Print("Ok, your card is..")
-	time.Sleep(suspenseTime)
-	fmt.Print(".")
-	time.Sleep(suspenseTime)
-	fmt.Print(".")
-	time.Sleep(suspenseTime)
+	simulateSuspense()
 	guessedCard := takeTheFourthCard(mat.GetPile(pileHolder))
 	fmt.Printf("... %v !\n", guessedCard)
 
 	return nil
+}
+
+func simulateSuspense() {
+	const suspenseTime = 1 * time.Second
+	time.Sleep(suspenseTime)
+	fmt.Print(".")
+	time.Sleep(suspenseTime)
+	fmt.Print(".")
+	time.Sleep(suspenseTime)
 }
 
 func takeTheFourthCard(pile deck.Pile) deck.Card {

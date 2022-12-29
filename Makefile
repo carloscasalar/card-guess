@@ -23,8 +23,11 @@ tidy: ## Cleans up go.mod and go.sum
 fmt: ## Formats all code with go fmt
 	@go fmt ./...
 
-run: fmt ## Run the app
+run: fmt ## Run the trick
 	@go run ./cmd/card-guess/main.go
+
+run-fixed-initial-set: fmt ## Run the trick and don't shuffle cards before the initial draw
+	@go run ./cmd/card-guess/main.go -shuffle-before-initial-sample=false
 
 test-build: ## Tests whether the code compiles
 	@go build -o /dev/null ./...
@@ -66,7 +69,7 @@ out/report.json: out
 	@go test -count 1 ./... -coverprofile=out/cover.out --json | tee "$(@)"
 
 clean: ## Cleans up everything
-	@rm -rf bin out 
+	@rm -rf bin out
 
 docker: ## Builds docker image
 	docker buildx build -t $(DOCKER_REPO):$(DOCKER_TAG) .
