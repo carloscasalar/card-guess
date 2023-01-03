@@ -56,6 +56,22 @@ func (s *WhenPileHasNoCardsSuite) Test_Cards_should_return_empty_array() {
 	assert.Empty(s.T(), cards)
 }
 
+func (s *WhenPileHasNoCardsSuite) Test_Size_should_be_zero() {
+	assert.Equal(s.T(), 0, s.pile.Size())
+}
+
+func (s *WhenPileHasNoCardsSuite) Test_String_representation_should_be_empty() {
+	assert.Equal(s.T(), "", s.pile.String())
+}
+
+func (s *WhenPileHasNoCardsSuite) Test_StackOnTop_a_pile_should_be_the_stacked_pile_itself() {
+	otherPile := deck.NewPile(topCard)
+
+	resultingPile := s.pile.StackOnTopOf(otherPile)
+
+	assert.Equal(s.T(), otherPile, resultingPile)
+}
+
 type WhenPileHasOneCardSuite struct {
 	suite.Suite
 	pile deck.Pile
