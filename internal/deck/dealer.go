@@ -1,6 +1,9 @@
 package deck
 
-import dealerlib "github.com/carloscasalar/go-cards/v2/pkg/dealer"
+import (
+	"math/rand"
+	"time"
+)
 
 type Dealer interface {
 	ShuffleCards()
@@ -9,24 +12,28 @@ type Dealer interface {
 
 func NewDealer() Dealer {
 	return &dealer{
-		wrappedDealer: dealerlib.NewDealer(1),
+		deck: newDeck(),
 	}
 }
 
 type dealer struct {
-	wrappedDealer *dealerlib.Dealer
+	deck Pile
 }
 
 func (d *dealer) ShuffleCards() {
-	d.wrappedDealer.ShuffleCards()
+	rand.Seed(time.Now().UnixNano())
+	cards := d.deck.Cards()
+	rand.Shuffle(len(cards), func(i, j int) {
+		cards[i], cards[j] = cards[j], cards[i]
+	})
+	d.deck = NewPile(cards...)
 }
 
 func (d *dealer) Deal() (Card, error) {
-	card, err := d.wrappedDealer.Deal()
+	card, resultingDeck, err := d.deck.DrawCard()
 	if err != nil {
 		return nil, err
 	}
-
-	var cardDealt Card = *card
-	return cardDealt, nil
+	d.deck = resultingDeck
+	return card, nil
 }
