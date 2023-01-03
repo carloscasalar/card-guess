@@ -17,13 +17,6 @@ import (
 const TrickSampleSize = 21
 
 func main() {
-	if err := run(); err != nil {
-		fmt.Fprintf(os.Stderr, "an error occurred: %s\n", err)
-		os.Exit(1)
-	}
-}
-
-func run() error {
 	mustShuffle := flag.Bool("shuffle-before-initial-sample", true, "Tells if you want to shuffle before drawing the initial set of cards")
 	flag.Parse()
 
@@ -32,8 +25,15 @@ func run() error {
 		os.Exit(1)
 	}
 
+	if err := run(*mustShuffle); err != nil {
+		fmt.Fprintf(os.Stderr, "an error occurred: %s\n", err)
+		os.Exit(1)
+	}
+}
+
+func run(mustShuffle bool) error {
 	dealer := deck.NewDealer()
-	if *mustShuffle {
+	if mustShuffle {
 		dealer.ShuffleCards()
 	}
 
