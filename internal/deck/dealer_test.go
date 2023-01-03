@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-const STANDAR_DECK_SIZE = 52
+const StandardDeckSize = 52
 
 type DealerSuite struct {
 	suite.Suite
@@ -32,17 +32,17 @@ func (s *DealerSuite) Test_deal_should_deal_a_card() {
 }
 
 func (s *DealerSuite) Test_deal_should_deal_up_52() {
-	_, err := dealCards(s.dealer, STANDAR_DECK_SIZE)
+	_, err := dealCards(s.dealer, StandardDeckSize)
 
 	assert.NoError(s.T(), err)
 }
 
 func (s *DealerSuite) Test_all_card_dealt_should_be_different() {
-	cardsDealt, _ := dealCards(s.dealer, STANDAR_DECK_SIZE)
+	cardsDealt, _ := dealCards(s.dealer, StandardDeckSize)
 
 	uniqueCardsDealt := toMapOfCards(cardsDealt)
 
-	assert.Len(s.T(), uniqueCardsDealt, STANDAR_DECK_SIZE)
+	assert.Len(s.T(), uniqueCardsDealt, StandardDeckSize)
 }
 
 func (s *DealerSuite) Test_trying_to_deal_more_than_52_cards_should_return_error() {
@@ -54,8 +54,8 @@ func (s *DealerSuite) Test_trying_to_deal_more_than_52_cards_should_return_error
 func (s *DealerSuite) Test_shuffled_cards_should_contain_different_in_different_order() {
 	shuffleDealer := deck.NewDealer()
 	shuffleDealer.ShuffleCards()
-	shuffledCards, _ := dealCards(shuffleDealer, STANDAR_DECK_SIZE)
-	nonShuffledCards, _ := dealCards(s.dealer, STANDAR_DECK_SIZE)
+	shuffledCards, _ := dealCards(shuffleDealer, StandardDeckSize)
+	nonShuffledCards, _ := dealCards(s.dealer, StandardDeckSize)
 
 	assert.Equal(s.T(), len(nonShuffledCards), len(shuffledCards))
 	assert.NotEqual(s.T(), nonShuffledCards, shuffledCards)
