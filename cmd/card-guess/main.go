@@ -111,7 +111,7 @@ func takeTheFourthCard(pile deck.Pile) deck.Card {
 	return card
 }
 
-func splitIntoThreePiles(sample deck.Pile) (*mat.Mat, error) {
+func splitIntoThreePiles(sample deck.Pile) (mat.Mat, error) {
 	mat := mat.New()
 	for {
 		var card deck.Card
@@ -125,7 +125,7 @@ func splitIntoThreePiles(sample deck.Pile) (*mat.Mat, error) {
 		}
 		mat = mat.PlaceIntoNextPile(card)
 	}
-	return &mat, nil
+	return mat, nil
 }
 
 func askForThePileWhereTheCardIs(piles []mat.PileInMat) (mat.PileHolder, error) {

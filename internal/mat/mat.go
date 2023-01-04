@@ -2,12 +2,15 @@ package mat
 
 import "github.com/carloscasalar/card-guess/internal/deck"
 
-type Mat struct {
-	piles map[PileHolder]deck.Pile
+type Mat interface {
+	PlaceIntoNextPile(card deck.Card) Mat
+	JoinWithPileInTheMiddle(holder PileHolder) deck.Pile
+	Piles() []PileInMat
+	Pile(holder PileHolder) deck.Pile
 }
 
 func New() Mat {
-	return Mat{
+	return regularMat{
 		piles: map[PileHolder]deck.Pile{
 			FirstPile:  deck.NewPile(),
 			SecondPile: deck.NewPile(),
@@ -16,14 +19,18 @@ func New() Mat {
 	}
 }
 
-func (m Mat) PlaceIntoNextPile(card deck.Card) Mat {
+type regularMat struct {
+	piles map[PileHolder]deck.Pile
+}
+
+func (m regularMat) PlaceIntoNextPile(card deck.Card) Mat {
 	theMat := m.copy()
 	nextPile := theMat.nextPile()
 	theMat.piles[nextPile] = theMat.piles[nextPile].AddCard(card)
 	return theMat
 }
 
-func (m Mat) JoinWithPileInTheMiddle(holder PileHolder) deck.Pile {
+func (m regularMat) JoinWithPileInTheMiddle(holder PileHolder) deck.Pile {
 	firstHolder := holder.nextPile()
 	pile := m.piles[firstHolder].StackOnTopOf(m.piles[holder])
 	lastHolder := firstHolder.nextPile()
@@ -31,7 +38,7 @@ func (m Mat) JoinWithPileInTheMiddle(holder PileHolder) deck.Pile {
 	return pile
 }
 
-func (m Mat) Piles() []PileInMat {
+func (m regularMat) Piles() []PileInMat {
 	var piles = make([]PileInMat, len(m.piles))
 	for holder, pile := range m.piles {
 		piles[holder] = PileInMat{holder, pile}
@@ -39,20 +46,20 @@ func (m Mat) Piles() []PileInMat {
 	return piles
 }
 
-func (m Mat) Pile(holder PileHolder) deck.Pile {
+func (m regularMat) Pile(holder PileHolder) deck.Pile {
 	return m.piles[holder]
 }
 
-func (m Mat) copy() Mat {
+func (m regularMat) copy() regularMat {
 	piles := make(map[PileHolder]deck.Pile)
 	piles[FirstPile] = m.piles[FirstPile]
 	piles[SecondPile] = m.piles[SecondPile]
 	piles[ThirdPile] = m.piles[ThirdPile]
 
-	return Mat{piles}
+	return regularMat{piles}
 }
 
-func (m Mat) nextPile() PileHolder {
+func (m regularMat) nextPile() PileHolder {
 	lessCardPile := ThirdPile
 	minPileSize := m.piles[ThirdPile].Size()
 
