@@ -3,11 +3,13 @@ package deck
 import (
 	"math/rand"
 	"time"
+
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
 )
 
 type Dealer interface {
 	ShuffleCards()
-	Deal() (Card, error)
+	Deal() (threepilestrick.Card, error)
 }
 
 func NewDealer() Dealer {
@@ -29,7 +31,7 @@ func (d *dealer) ShuffleCards() {
 	d.deck = NewPile(cards...)
 }
 
-func (d *dealer) Deal() (Card, error) {
+func (d *dealer) Deal() (threepilestrick.Card, error) {
 	card, resultingDeck, err := d.deck.DrawCard()
 	if err != nil {
 		return nil, err

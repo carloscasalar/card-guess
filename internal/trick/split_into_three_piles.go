@@ -3,6 +3,8 @@ package trick
 import (
 	"errors"
 
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+
 	"github.com/carloscasalar/card-guess/internal/deck"
 	"github.com/carloscasalar/card-guess/internal/mat"
 )
@@ -10,7 +12,7 @@ import (
 func splitIntoThreePiles(sample deck.Pile) (*mat.Mat, error) {
 	theMat := mat.New()
 	for {
-		var card deck.Card
+		var card threepilestrick.Card
 		var err error
 		card, sample, err = sample.DrawCard()
 		if err != nil {

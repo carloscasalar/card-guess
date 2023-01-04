@@ -4,18 +4,20 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
 )
 
 type Pile interface {
-	DrawCard() (Card, Pile, error)
-	AddCard(card Card) Pile
+	DrawCard() (threepilestrick.Card, Pile, error)
+	AddCard(card threepilestrick.Card) Pile
 	StackOnTopOf(Pile) Pile
-	Cards() []Card
+	Cards() []threepilestrick.Card
 	Size() int
 	String() string
 }
 
-func NewPile(cards ...Card) Pile {
+func NewPile(cards ...threepilestrick.Card) Pile {
 	if len(cards) == 0 {
 		return &emptyPile{}
 	}
@@ -25,11 +27,11 @@ func NewPile(cards ...Card) Pile {
 }
 
 type pile struct {
-	topCard    Card
+	topCard    threepilestrick.Card
 	otherCards Pile
 }
 
-func (p pile) DrawCard() (Card, Pile, error) {
+func (p pile) DrawCard() (threepilestrick.Card, Pile, error) {
 	newFirstCard, newOtherCards, err := p.otherCards.DrawCard()
 	if err != nil {
 		if errors.Is(err, ErrNoMoreCardsInThePile) {
@@ -42,7 +44,7 @@ func (p pile) DrawCard() (Card, Pile, error) {
 	return drawnCard, resultingPile, nil
 }
 
-func (p pile) AddCard(card Card) Pile {
+func (p pile) AddCard(card threepilestrick.Card) Pile {
 	return &pile{
 		topCard:    card,
 		otherCards: p,
@@ -55,8 +57,8 @@ func (p pile) StackOnTopOf(otherPile Pile) Pile {
 	return NewPile(cards...)
 }
 
-func (p pile) Cards() []Card {
-	return append([]Card{p.topCard}, p.otherCards.Cards()...)
+func (p pile) Cards() []threepilestrick.Card {
+	return append([]threepilestrick.Card{p.topCard}, p.otherCards.Cards()...)
 }
 
 func (p pile) Size() int {

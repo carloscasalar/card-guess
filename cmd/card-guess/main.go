@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+
 	"github.com/manifoldco/promptui"
 
 	"github.com/carloscasalar/card-guess/internal/mat"
@@ -101,7 +103,7 @@ func simulateSuspense() {
 	time.Sleep(suspenseTime)
 }
 
-func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) deck.Card {
+func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) threepilestrick.Card {
 	var pile deck.Pile
 	switch holder {
 	case mat.FirstPile:
@@ -112,7 +114,7 @@ func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) deck.Card {
 		pile = theMat.ThirdPile()
 	}
 
-	var card deck.Card
+	var card threepilestrick.Card
 	const fourth = 4
 	for i := 0; i < fourth; i++ {
 		card, pile, _ = pile.DrawCard()
@@ -124,7 +126,7 @@ func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) deck.Card {
 func splitIntoThreePiles(sample deck.Pile) (mat.Mat, error) {
 	mat := mat.New()
 	for {
-		var card deck.Card
+		var card threepilestrick.Card
 		var err error
 		card, sample, err = sample.DrawCard()
 		if err != nil {

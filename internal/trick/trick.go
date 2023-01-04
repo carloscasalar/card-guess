@@ -3,6 +3,8 @@ package trick
 import (
 	"fmt"
 
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+
 	"github.com/carloscasalar/card-guess/internal/mat"
 
 	"github.com/carloscasalar/card-guess/internal/deck"
@@ -20,7 +22,7 @@ func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 	if shuffleBeforeInitialDraw {
 		dealer.ShuffleCards()
 	}
-	cards := make([]deck.Card, trickSampleSize)
+	cards := make([]threepilestrick.Card, trickSampleSize)
 	for i := 0; i < trickSampleSize; i++ {
 		card, err := dealer.Deal()
 		if err != nil {

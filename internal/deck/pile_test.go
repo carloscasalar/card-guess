@@ -3,6 +3,8 @@ package deck_test
 import (
 	"testing"
 
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+
 	"github.com/carloscasalar/card-guess/internal/deck"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -40,14 +42,14 @@ func (s *WhenPileHasNoCardsSuite) Test_DrawCard_should_return_error() {
 func (s *WhenPileHasNoCardsSuite) Test_AddCard_should_add_new_card() {
 	pile := s.pile.AddCard(firstCard)
 
-	assert.Equal(s.T(), pile.Cards(), []deck.Card{firstCard})
+	assert.Equal(s.T(), pile.Cards(), []threepilestrick.Card{firstCard})
 }
 
 func (s *WhenPileHasNoCardsSuite) Test_AddCard_twice_should_add_two_cards() {
 	pile := s.pile.AddCard(bottomCard)
 	pile = pile.AddCard(topCard)
 
-	assert.Equal(s.T(), pile.Cards(), []deck.Card{topCard, bottomCard})
+	assert.Equal(s.T(), pile.Cards(), []threepilestrick.Card{topCard, bottomCard})
 }
 
 func (s *WhenPileHasNoCardsSuite) Test_Cards_should_return_empty_array() {
@@ -102,7 +104,7 @@ func (s *WhenPileHasOneCardSuite) Test_DrawCard_should_return_error_when_draw_se
 func (s *WhenPileHasOneCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
 	cards := s.pile.Cards()
 
-	assert.Equal(s.T(), []deck.Card{firstCard}, cards)
+	assert.Equal(s.T(), []threepilestrick.Card{firstCard}, cards)
 }
 
 type WhenPileHasTwoCardSuite struct {
@@ -144,7 +146,7 @@ func (s *WhenPileHasTwoCardSuite) Test_DrawCard_third_draw_should_return_error()
 func (s *WhenPileHasTwoCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
 	cards := s.pile.Cards()
 
-	assert.Equal(s.T(), []deck.Card{firstCard, secondCard}, cards)
+	assert.Equal(s.T(), []threepilestrick.Card{firstCard, secondCard}, cards)
 }
 
 type WhenPileHasThreeCardSuite struct {
@@ -163,7 +165,7 @@ func (s *WhenPileHasThreeCardSuite) SetupTest() {
 func (s *WhenPileHasThreeCardSuite) Test_AddCard_should_add_the_card_on_top_of_the_pile() {
 	pile := s.pile.AddCard(topCard)
 
-	assert.Equal(s.T(), []deck.Card{topCard, firstCard, secondCard, thirdCard}, pile.Cards())
+	assert.Equal(s.T(), []threepilestrick.Card{topCard, firstCard, secondCard, thirdCard}, pile.Cards())
 }
 
 func (s *WhenPileHasThreeCardSuite) Test_StackOnTop_should_put_the_whole_pile_on_top() {
@@ -177,14 +179,14 @@ func (s *WhenPileHasThreeCardSuite) Test_StackOnTop_should_put_the_whole_pile_on
 func (s *WhenPileHasThreeCardSuite) Test_Cards_should_list_all_cards_of_the_pile_in_order() {
 	cards := s.pile.Cards()
 
-	assert.Equal(s.T(), []deck.Card{firstCard, secondCard, thirdCard}, cards)
+	assert.Equal(s.T(), []threepilestrick.Card{firstCard, secondCard, thirdCard}, cards)
 }
 
 func (s *WhenPileHasThreeCardSuite) Test_String_should_contain_all_cards_of_the_pile_in_order() {
 	assert.Equal(s.T(), "firstCard  secondCard  thirdCard", s.pile.String())
 }
 
-func NewCard(name string) deck.Card {
+func NewCard(name string) threepilestrick.Card {
 	return &CardStub{name}
 }
 

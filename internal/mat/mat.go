@@ -1,9 +1,12 @@
 package mat
 
-import "github.com/carloscasalar/card-guess/internal/deck"
+import (
+	"github.com/carloscasalar/card-guess/internal/deck"
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+)
 
 type Mat interface {
-	PlaceIntoNextPile(card deck.Card) Mat
+	PlaceIntoNextPile(card threepilestrick.Card) Mat
 	JoinWithPileInTheMiddle(holder PileHolder) deck.Pile
 	FirstPile() deck.Pile
 	SecondPile() deck.Pile
@@ -24,7 +27,7 @@ type regularMat struct {
 	piles map[PileHolder]deck.Pile
 }
 
-func (m regularMat) PlaceIntoNextPile(card deck.Card) Mat {
+func (m regularMat) PlaceIntoNextPile(card threepilestrick.Card) Mat {
 	theMat := m.copy()
 	nextPile := theMat.nextPile()
 	theMat.piles[nextPile] = theMat.piles[nextPile].AddCard(card)

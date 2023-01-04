@@ -1,10 +1,10 @@
 package deck
 
-import "fmt"
+import (
+	"fmt"
 
-type Card interface {
-	String() string
-}
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+)
 
 type cardValue string
 type suit string
@@ -22,7 +22,7 @@ func newDeck() Pile {
 	values := []cardValue{"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"}
 	suits := []suit{"♠", "♥", "♦", "♣"}
 
-	cards := make([]Card, len(values)*len(suits))
+	cards := make([]threepilestrick.Card, len(values)*len(suits))
 	cardIndex := 0
 	for _, suit := range suits {
 		for _, value := range values {

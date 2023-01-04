@@ -1,12 +1,14 @@
 package deck
 
+import "github.com/carloscasalar/card-guess/pkg/threepilestrick"
+
 type emptyPile struct{}
 
-func (e emptyPile) DrawCard() (Card, Pile, error) {
+func (e emptyPile) DrawCard() (threepilestrick.Card, Pile, error) {
 	return nil, e, ErrNoMoreCardsInThePile
 }
 
-func (e emptyPile) AddCard(card Card) Pile {
+func (e emptyPile) AddCard(card threepilestrick.Card) Pile {
 	return &pile{
 		topCard:    card,
 		otherCards: emptyPile{},
@@ -17,8 +19,8 @@ func (e emptyPile) StackOnTopOf(pile Pile) Pile {
 	return pile
 }
 
-func (e emptyPile) Cards() []Card {
-	return []Card{}
+func (e emptyPile) Cards() []threepilestrick.Card {
+	return []threepilestrick.Card{}
 }
 
 func (e emptyPile) Size() int {

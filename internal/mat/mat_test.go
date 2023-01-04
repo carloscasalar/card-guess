@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+
 	"github.com/stretchr/testify/require"
 
 	"github.com/carloscasalar/card-guess/internal/deck"
@@ -61,7 +63,7 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 
 	topCardCases := map[string]struct {
 		pile            deck.Pile
-		expectedTopCard deck.Card
+		expectedTopCard threepilestrick.Card
 	}{
 		"fourth card should be on top of the first pile": {theMat.FirstPile(), card("fourth card")},
 		"fifth card should be on top of the second pile": {theMat.SecondPile(), card("fifth card")},
@@ -77,7 +79,7 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 
 	bottomCardCases := map[string]struct {
 		pile            deck.Pile
-		expectedTopCard deck.Card
+		expectedTopCard threepilestrick.Card
 	}{
 		"fourth card should be at the bottom of the first pile": {theMat.FirstPile(), card("first card")},
 		"fifth card should be at the bottom of the second pile": {theMat.SecondPile(), card("second card")},
@@ -132,7 +134,7 @@ func newMatWithCards(numberOfCards int) mat.Mat {
 	return theMat
 }
 
-func card(name string) deck.Card {
+func card(name string) threepilestrick.Card {
 	return &CardStub{name}
 }
 
