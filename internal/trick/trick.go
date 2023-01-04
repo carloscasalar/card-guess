@@ -11,7 +11,7 @@ import (
 const trickSampleSize = 21
 
 type Trick interface {
-	Cards() []deck.Card
+	Sample() deck.Pile
 	Mat() mat.Mat
 }
 
@@ -29,21 +29,22 @@ func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 		cards[i] = card
 	}
 
-	theMat, err := splitIntoThreePiles(deck.NewPile(cards...))
+	sample := deck.NewPile(cards...)
+	theMat, err := splitIntoThreePiles(sample)
 	if err != nil {
 		return nil, err
 	}
 
-	return &startingTrick{cards, *theMat}, nil
+	return &startingTrick{sample, *theMat}, nil
 }
 
 type startingTrick struct {
-	cards []deck.Card
-	mat   mat.Mat
+	sample deck.Pile
+	mat    mat.Mat
 }
 
-func (s startingTrick) Cards() []deck.Card {
-	return s.cards
+func (s startingTrick) Sample() deck.Pile {
+	return s.sample
 }
 
 func (s startingTrick) Mat() mat.Mat {

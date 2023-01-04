@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/carloscasalar/card-guess/internal/deck"
-
 	"github.com/carloscasalar/card-guess/internal/mat"
 
 	"github.com/stretchr/testify/require"
@@ -18,20 +16,20 @@ func Test_NewTrick_should_provide_21_cards(t *testing.T) {
 	theTrick, err := trick.New(true)
 
 	require.NoError(t, err)
-	assert.Len(t, theTrick.Cards(), 21)
+	assert.Equal(t, 21, theTrick.Sample().Size())
 }
 
 func Test_NewTrick_should_provide_21_different_random_cards_each_time(t *testing.T) {
 	aTrick, _ := trick.New(true)
 	otherTrick, _ := trick.New(true)
 
-	assert.NotEqual(t, aTrick.Cards(), otherTrick.Cards())
+	assert.NotEqual(t, aTrick.Sample(), otherTrick.Sample())
 }
 
 func Test_NewTrick_should_provide_same_exact_cards_when_dont_shuffle_before_draw(t *testing.T) {
 	aTrick, _ := trick.New(false)
 
-	trickCardsStr := cardsString(aTrick)
+	trickCardsStr := aTrick.Sample().String()
 	assert.Equal(t, " A[♠]   2[♠]   3[♠]   4[♠]   5[♠]   6[♠]   7[♠]   8[♠]   9[♠]  10[♠]   J[♠]   Q[♠]   K[♠]   A[♥]   2[♥]   3[♥]   4[♥]   5[♥]   6[♥]   7[♥]   8[♥]", trickCardsStr)
 }
 
@@ -45,10 +43,4 @@ func Test_NewTrick_should_contain_a_mat_with_initial_sample_split_into_three_pil
 
 func pileString(aTrick trick.Trick, holder mat.PileHolder) string {
 	return fmt.Sprintf("%v", aTrick.Mat().Pile(holder))
-}
-
-func cardsString(aTrick trick.Trick) string {
-	trickCards := deck.NewPile(aTrick.Cards()...)
-	trickCardsStr := fmt.Sprintf("%v", trickCards)
-	return trickCardsStr
 }
