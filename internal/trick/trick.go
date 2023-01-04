@@ -12,9 +12,11 @@ type Trick interface {
 	Cards() []deck.Card
 }
 
-func New() (Trick, error) {
+func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 	dealer := deck.NewDealer()
-	dealer.ShuffleCards()
+	if shuffleBeforeInitialDraw {
+		dealer.ShuffleCards()
+	}
 	cards := make([]deck.Card, trickSampleSize)
 	for i := 0; i < trickSampleSize; i++ {
 		card, err := dealer.Deal()
