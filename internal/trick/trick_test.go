@@ -44,7 +44,7 @@ func Test_NewTrick_should_contain_a_mat_with_initial_sample_split_into_three_pil
 }
 
 func pileString(aTrick trick.Trick, holder mat.PileHolder) string {
-	return fmt.Sprintf("%v", aTrick.Mat().GetPile(holder))
+	return fmt.Sprintf("%v", aTrick.Mat().Pile(holder))
 }
 
 func cardsString(aTrick trick.Trick) string {

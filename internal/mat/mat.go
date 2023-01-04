@@ -39,7 +39,7 @@ func (m Mat) Piles() []PileInMat {
 	return piles
 }
 
-func (m Mat) GetPile(holder PileHolder) deck.Pile {
+func (m Mat) Pile(holder PileHolder) deck.Pile {
 	return m.piles[holder]
 }
 

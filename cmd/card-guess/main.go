@@ -86,7 +86,7 @@ func run(mustShuffle bool) error {
 
 	fmt.Print("Ok, your card is..")
 	simulateSuspense()
-	guessedCard := takeTheFourthCard(mat.GetPile(pileHolder))
+	guessedCard := takeTheFourthCard(mat.Pile(pileHolder))
 	fmt.Printf("... %v !\n", guessedCard)
 
 	return nil

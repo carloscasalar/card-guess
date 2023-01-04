@@ -14,9 +14,9 @@ import (
 func TestNewMat_should_crate_a_mat_with_three_empty_piles(t *testing.T) {
 	theMat := mat.New()
 
-	assert.Len(t, theMat.GetPile(mat.FirstPile).Cards(), 0)
-	assert.Len(t, theMat.GetPile(mat.SecondPile).Cards(), 0)
-	assert.Len(t, theMat.GetPile(mat.ThirdPile).Cards(), 0)
+	assert.Len(t, theMat.Pile(mat.FirstPile).Cards(), 0)
+	assert.Len(t, theMat.Pile(mat.SecondPile).Cards(), 0)
+	assert.Len(t, theMat.Pile(mat.ThirdPile).Cards(), 0)
 }
 
 func TestMat_PlaceIntoNextPile_should_put_first_card_in_first_pile(t *testing.T) {
@@ -24,7 +24,7 @@ func TestMat_PlaceIntoNextPile_should_put_first_card_in_first_pile(t *testing.T)
 
 	theMat = theMat.PlaceIntoNextPile(card("first card"))
 
-	firstPileCards := theMat.GetPile(mat.FirstPile).Cards()
+	firstPileCards := theMat.Pile(mat.FirstPile).Cards()
 	require.Len(t, firstPileCards, 1)
 	assert.Equal(t, card("first card"), firstPileCards[0])
 }
@@ -34,7 +34,7 @@ func TestMat_PlaceIntoNextPile_should_put_second_card_in_second_pile(t *testing.
 
 	theMat = theMat.PlaceIntoNextPile(card("second card"))
 
-	secondPileCards := theMat.GetPile(mat.SecondPile).Cards()
+	secondPileCards := theMat.Pile(mat.SecondPile).Cards()
 	require.Len(t, secondPileCards, 1)
 	assert.Equal(t, card("second card"), secondPileCards[0])
 }
@@ -44,7 +44,7 @@ func TestMat_PlaceIntoNextPile_should_put_third_card_in_third_pile(t *testing.T)
 
 	theMat = theMat.PlaceIntoNextPile(card("third card"))
 
-	thirdPileCards := theMat.GetPile(mat.ThirdPile).Cards()
+	thirdPileCards := theMat.Pile(mat.ThirdPile).Cards()
 	require.Len(t, thirdPileCards, 1)
 	assert.Equal(t, card("third card"), thirdPileCards[0])
 }
@@ -69,7 +69,7 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 	}
 	for sentence, tc := range topCardCases {
 		t.Run(sentence, func(t *testing.T) {
-			pileCards := theMat.GetPile(tc.holder).Cards()
+			pileCards := theMat.Pile(tc.holder).Cards()
 			require.Len(t, pileCards, 2)
 			assert.Equal(t, tc.expectedTopCard, pileCards[0])
 		})
@@ -85,7 +85,7 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 	}
 	for sentence, tc := range bottomCardCases {
 		t.Run(sentence, func(t *testing.T) {
-			pileCards := theMat.GetPile(tc.holder).Cards()
+			pileCards := theMat.Pile(tc.holder).Cards()
 			require.Len(t, pileCards, 2)
 			assert.Equal(t, tc.expectedTopCard, pileCards[1])
 		})
