@@ -5,8 +5,9 @@ import "github.com/carloscasalar/card-guess/internal/deck"
 type Mat interface {
 	PlaceIntoNextPile(card deck.Card) Mat
 	JoinWithPileInTheMiddle(holder PileHolder) deck.Pile
-	Piles() []PileInMat
-	Pile(holder PileHolder) deck.Pile
+	FirstPile() deck.Pile
+	SecondPile() deck.Pile
+	ThirdPile() deck.Pile
 }
 
 func New() Mat {
@@ -38,16 +39,16 @@ func (m regularMat) JoinWithPileInTheMiddle(holder PileHolder) deck.Pile {
 	return pile
 }
 
-func (m regularMat) Piles() []PileInMat {
-	var piles = make([]PileInMat, len(m.piles))
-	for holder, pile := range m.piles {
-		piles[holder] = PileInMat{holder, pile}
-	}
-	return piles
+func (m regularMat) FirstPile() deck.Pile {
+	return m.piles[FirstPile]
 }
 
-func (m regularMat) Pile(holder PileHolder) deck.Pile {
-	return m.piles[holder]
+func (m regularMat) SecondPile() deck.Pile {
+	return m.piles[SecondPile]
+}
+
+func (m regularMat) ThirdPile() deck.Pile {
+	return m.piles[ThirdPile]
 }
 
 func (m regularMat) copy() regularMat {

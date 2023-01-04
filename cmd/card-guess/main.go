@@ -57,7 +57,7 @@ func run(mustShuffle bool) error {
 		return err
 	}
 
-	pileHolder, err := askForThePileWhereTheCardIs(mat.Piles())
+	pileHolder, err := askForThePileWhereTheCardIs(piles(mat))
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func run(mustShuffle bool) error {
 	if err != nil {
 		return err
 	}
-	pileHolder, err = askForThePileWhereTheCardIs(mat.Piles())
+	pileHolder, err = askForThePileWhereTheCardIs(piles(mat))
 	if err != nil {
 		return err
 	}
@@ -79,14 +79,14 @@ func run(mustShuffle bool) error {
 	if err != nil {
 		return err
 	}
-	pileHolder, err = askForThePileWhereTheCardIs(mat.Piles())
+	pileHolder, err = askForThePileWhereTheCardIs(piles(mat))
 	if err != nil {
 		return err
 	}
 
 	fmt.Print("Ok, your card is..")
 	simulateSuspense()
-	guessedCard := takeTheFourthCard(mat.Pile(pileHolder))
+	guessedCard := takeTheFourthCard(mat, pileHolder)
 	fmt.Printf("... %v !\n", guessedCard)
 
 	return nil
@@ -101,7 +101,17 @@ func simulateSuspense() {
 	time.Sleep(suspenseTime)
 }
 
-func takeTheFourthCard(pile deck.Pile) deck.Card {
+func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) deck.Card {
+	var pile deck.Pile
+	switch holder {
+	case mat.FirstPile:
+		pile = theMat.FirstPile()
+	case mat.SecondPile:
+		pile = theMat.SecondPile()
+	case mat.ThirdPile:
+		pile = theMat.ThirdPile()
+	}
+
 	var card deck.Card
 	const fourth = 4
 	for i := 0; i < fourth; i++ {
@@ -128,7 +138,7 @@ func splitIntoThreePiles(sample deck.Pile) (mat.Mat, error) {
 	return mat, nil
 }
 
-func askForThePileWhereTheCardIs(piles []mat.PileInMat) (mat.PileHolder, error) {
+func askForThePileWhereTheCardIs(piles []pileInMat) (mat.PileHolder, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ .Pile }}?",
 		Active:   "-> {{ .Pile | cyan }}",
@@ -149,4 +159,17 @@ func askForThePileWhereTheCardIs(piles []mat.PileInMat) (mat.PileHolder, error) 
 	}
 
 	return piles[i].Holder, nil
+}
+
+func piles(aMat mat.Mat) []pileInMat {
+	return []pileInMat{
+		{mat.FirstPile, aMat.FirstPile()},
+		{mat.SecondPile, aMat.SecondPile()},
+		{mat.ThirdPile, aMat.ThirdPile()},
+	}
+}
+
+type pileInMat struct {
+	Holder mat.PileHolder
+	Pile   deck.Pile
 }
