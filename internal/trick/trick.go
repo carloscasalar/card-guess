@@ -10,12 +10,7 @@ import (
 
 const trickSampleSize = 21
 
-type Trick interface {
-	Sample() threepilestrick.Pile
-	Mat() threepilestrick.Mat
-}
-
-func New(shuffleBeforeInitialDraw bool) (Trick, error) {
+func New(shuffleBeforeInitialDraw bool) (threepilestrick.Trick, error) {
 	dealer := deck.NewDealer()
 	if shuffleBeforeInitialDraw {
 		dealer.ShuffleCards()
