@@ -1,14 +1,19 @@
 # Where should we write the GIF?
 Output demo.gif
+Output demo.ascii
 
 Set FontSize 12
 Set Width 800
 Set Height 400
 
 # Type a command in the terminal.
-Type "echo 'I will choose 9[Diamond] as my card shhhh...'"
+Hide
+Type "echo 'I will choose 6[Heart] as my card shhhh...'"
+Show
 Enter
+Hide
 Type "/app/main -shuffle-before-initial-sample=false"
+Show
 Enter
 
 # Pause for dramatic effect...
