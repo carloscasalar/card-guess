@@ -19,7 +19,7 @@ func NewDealer() Dealer {
 }
 
 type dealer struct {
-	deck Pile
+	deck threepilestrick.Pile
 }
 
 func (d *dealer) ShuffleCards() {

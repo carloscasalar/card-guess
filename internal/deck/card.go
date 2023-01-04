@@ -18,7 +18,7 @@ func (c card) String() string {
 	return fmt.Sprintf("%2s[%s]", c.value, c.suit)
 }
 
-func newDeck() Pile {
+func newDeck() threepilestrick.Pile {
 	values := []cardValue{"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"}
 	suits := []suit{"♠", "♥", "♦", "♣"}
 

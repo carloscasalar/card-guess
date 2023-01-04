@@ -22,7 +22,7 @@ var (
 
 type WhenPileHasNoCardsSuite struct {
 	suite.Suite
-	pile deck.Pile
+	pile threepilestrick.Pile
 }
 
 func Test_when_pile_has_no_cards(t *testing.T) {
@@ -76,7 +76,7 @@ func (s *WhenPileHasNoCardsSuite) Test_StackOnTop_a_pile_should_be_the_stacked_p
 
 type WhenPileHasOneCardSuite struct {
 	suite.Suite
-	pile deck.Pile
+	pile threepilestrick.Pile
 }
 
 func Test_when_pile_has_one_card(t *testing.T) {
@@ -109,7 +109,7 @@ func (s *WhenPileHasOneCardSuite) Test_Cards_should_list_all_cards_of_the_pile_i
 
 type WhenPileHasTwoCardSuite struct {
 	suite.Suite
-	pile deck.Pile
+	pile threepilestrick.Pile
 }
 
 func Test_when_pile_has_two_card(t *testing.T) {
@@ -151,7 +151,7 @@ func (s *WhenPileHasTwoCardSuite) Test_Cards_should_list_all_cards_of_the_pile_i
 
 type WhenPileHasThreeCardSuite struct {
 	suite.Suite
-	pile deck.Pile
+	pile threepilestrick.Pile
 }
 
 func Test_when_pile_has_three_card(t *testing.T) {

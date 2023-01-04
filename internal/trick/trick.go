@@ -13,7 +13,7 @@ import (
 const trickSampleSize = 21
 
 type Trick interface {
-	Sample() deck.Pile
+	Sample() threepilestrick.Pile
 	Mat() mat.Mat
 }
 
@@ -41,11 +41,11 @@ func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 }
 
 type startingTrick struct {
-	sample deck.Pile
+	sample threepilestrick.Pile
 	mat    mat.Mat
 }
 
-func (s startingTrick) Sample() deck.Pile {
+func (s startingTrick) Sample() threepilestrick.Pile {
 	return s.sample
 }
 

@@ -62,7 +62,7 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 		PlaceIntoNextPile(card("sixth card"))
 
 	topCardCases := map[string]struct {
-		pile            deck.Pile
+		pile            threepilestrick.Pile
 		expectedTopCard threepilestrick.Card
 	}{
 		"fourth card should be on top of the first pile": {theMat.FirstPile(), card("fourth card")},
@@ -78,7 +78,7 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 	}
 
 	bottomCardCases := map[string]struct {
-		pile            deck.Pile
+		pile            threepilestrick.Pile
 		expectedTopCard threepilestrick.Card
 	}{
 		"fourth card should be at the bottom of the first pile": {theMat.FirstPile(), card("first card")},

@@ -104,7 +104,7 @@ func simulateSuspense() {
 }
 
 func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) threepilestrick.Card {
-	var pile deck.Pile
+	var pile threepilestrick.Pile
 	switch holder {
 	case mat.FirstPile:
 		pile = theMat.FirstPile()
@@ -123,7 +123,7 @@ func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) threepilestrick.Ca
 	return card
 }
 
-func splitIntoThreePiles(sample deck.Pile) (mat.Mat, error) {
+func splitIntoThreePiles(sample threepilestrick.Pile) (mat.Mat, error) {
 	mat := mat.New()
 	for {
 		var card threepilestrick.Card
@@ -173,5 +173,5 @@ func piles(aMat mat.Mat) []pileInMat {
 
 type pileInMat struct {
 	Holder mat.PileHolder
-	Pile   deck.Pile
+	Pile   threepilestrick.Pile
 }
