@@ -3,6 +3,8 @@ package trick
 import (
 	"fmt"
 
+	"github.com/carloscasalar/card-guess/internal/mat"
+
 	"github.com/carloscasalar/card-guess/internal/deck"
 )
 
@@ -10,6 +12,7 @@ const trickSampleSize = 21
 
 type Trick interface {
 	Cards() []deck.Card
+	Mat() mat.Mat
 }
 
 func New(shuffleBeforeInitialDraw bool) (Trick, error) {
@@ -26,13 +29,23 @@ func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 		cards[i] = card
 	}
 
-	return &startingTrick{cards}, nil
+	theMat, err := splitIntoThreePiles(deck.NewPile(cards...))
+	if err != nil {
+		return nil, err
+	}
+
+	return &startingTrick{cards, *theMat}, nil
 }
 
 type startingTrick struct {
 	cards []deck.Card
+	mat   mat.Mat
 }
 
 func (s startingTrick) Cards() []deck.Card {
 	return s.cards
+}
+
+func (s startingTrick) Mat() mat.Mat {
+	return s.mat
 }

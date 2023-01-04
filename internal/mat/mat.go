@@ -6,6 +6,16 @@ type Mat struct {
 	piles map[PileHolder]deck.Pile
 }
 
+func New() Mat {
+	return Mat{
+		piles: map[PileHolder]deck.Pile{
+			FirstPile:  deck.NewPile(),
+			SecondPile: deck.NewPile(),
+			ThirdPile:  deck.NewPile(),
+		},
+	}
+}
+
 func (m Mat) PlaceIntoNextPile(card deck.Card) Mat {
 	theMat := m.copy()
 	nextPile := theMat.nextPile()
@@ -56,14 +66,4 @@ func (m Mat) nextPile() PileHolder {
 		holder = holder.nextPile()
 	}
 	return lessCardPile
-}
-
-func New() Mat {
-	return Mat{
-		piles: map[PileHolder]deck.Pile{
-			FirstPile:  deck.NewPile(),
-			SecondPile: deck.NewPile(),
-			ThirdPile:  deck.NewPile(),
-		},
-	}
 }
