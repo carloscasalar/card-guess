@@ -1,4 +1,4 @@
-package trick_test
+package mat_test
 
 import (
 	"fmt"
@@ -7,52 +7,52 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/carloscasalar/card-guess/internal/deck"
-	"github.com/carloscasalar/card-guess/internal/trick"
+	"github.com/carloscasalar/card-guess/internal/mat"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewMat_should_crate_a_mat_with_three_empty_piles(t *testing.T) {
-	mat := trick.NewMat()
+	theMat := mat.New()
 
-	assert.Len(t, mat.GetPile(trick.FirstPile).Cards(), 0)
-	assert.Len(t, mat.GetPile(trick.SecondPile).Cards(), 0)
-	assert.Len(t, mat.GetPile(trick.ThirdPile).Cards(), 0)
+	assert.Len(t, theMat.GetPile(mat.FirstPile).Cards(), 0)
+	assert.Len(t, theMat.GetPile(mat.SecondPile).Cards(), 0)
+	assert.Len(t, theMat.GetPile(mat.ThirdPile).Cards(), 0)
 }
 
 func TestMat_PlaceIntoNextPile_should_put_first_card_in_first_pile(t *testing.T) {
-	mat := trick.NewMat()
+	theMat := mat.New()
 
-	mat = mat.PlaceIntoNextPile(card("first card"))
+	theMat = theMat.PlaceIntoNextPile(card("first card"))
 
-	firstPileCards := mat.GetPile(trick.FirstPile).Cards()
+	firstPileCards := theMat.GetPile(mat.FirstPile).Cards()
 	require.Len(t, firstPileCards, 1)
 	assert.Equal(t, card("first card"), firstPileCards[0])
 }
 
 func TestMat_PlaceIntoNextPile_should_put_second_card_in_second_pile(t *testing.T) {
-	mat := newMatWithCards(1)
+	theMat := newMatWithCards(1)
 
-	mat = mat.PlaceIntoNextPile(card("second card"))
+	theMat = theMat.PlaceIntoNextPile(card("second card"))
 
-	secondPileCards := mat.GetPile(trick.SecondPile).Cards()
+	secondPileCards := theMat.GetPile(mat.SecondPile).Cards()
 	require.Len(t, secondPileCards, 1)
 	assert.Equal(t, card("second card"), secondPileCards[0])
 }
 
 func TestMat_PlaceIntoNextPile_should_put_third_card_in_third_pile(t *testing.T) {
-	mat := newMatWithCards(2)
+	theMat := newMatWithCards(2)
 
-	mat = mat.PlaceIntoNextPile(card("third card"))
+	theMat = theMat.PlaceIntoNextPile(card("third card"))
 
-	thirdPileCards := mat.GetPile(trick.ThirdPile).Cards()
+	thirdPileCards := theMat.GetPile(mat.ThirdPile).Cards()
 	require.Len(t, thirdPileCards, 1)
 	assert.Equal(t, card("third card"), thirdPileCards[0])
 }
 
 func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
-	mat := trick.NewMat()
+	theMat := mat.New()
 
-	mat = mat.PlaceIntoNextPile(card("first card")).
+	theMat = theMat.PlaceIntoNextPile(card("first card")).
 		PlaceIntoNextPile(card("second card")).
 		PlaceIntoNextPile(card("third card")).
 		PlaceIntoNextPile(card("fourth card")).
@@ -60,32 +60,32 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 		PlaceIntoNextPile(card("sixth card"))
 
 	topCardCases := map[string]struct {
-		holder          trick.PileHolder
+		holder          mat.PileHolder
 		expectedTopCard deck.Card
 	}{
-		"fourth card should be on top of the first pile": {trick.FirstPile, card("fourth card")},
-		"fifth card should be on top of the second pile": {trick.SecondPile, card("fifth card")},
-		"sixth card should be on top of the third pile":  {trick.ThirdPile, card("sixth card")},
+		"fourth card should be on top of the first pile": {mat.FirstPile, card("fourth card")},
+		"fifth card should be on top of the second pile": {mat.SecondPile, card("fifth card")},
+		"sixth card should be on top of the third pile":  {mat.ThirdPile, card("sixth card")},
 	}
 	for sentence, tc := range topCardCases {
 		t.Run(sentence, func(t *testing.T) {
-			pileCards := mat.GetPile(tc.holder).Cards()
+			pileCards := theMat.GetPile(tc.holder).Cards()
 			require.Len(t, pileCards, 2)
 			assert.Equal(t, tc.expectedTopCard, pileCards[0])
 		})
 	}
 
 	bottomCardCases := map[string]struct {
-		holder          trick.PileHolder
+		holder          mat.PileHolder
 		expectedTopCard deck.Card
 	}{
-		"fourth card should be at the bottom of the first pile": {trick.FirstPile, card("first card")},
-		"fifth card should be at the bottom of the second pile": {trick.SecondPile, card("second card")},
-		"sixth card should be at the bottom of the third pile":  {trick.ThirdPile, card("third card")},
+		"fourth card should be at the bottom of the first pile": {mat.FirstPile, card("first card")},
+		"fifth card should be at the bottom of the second pile": {mat.SecondPile, card("second card")},
+		"sixth card should be at the bottom of the third pile":  {mat.ThirdPile, card("third card")},
 	}
 	for sentence, tc := range bottomCardCases {
 		t.Run(sentence, func(t *testing.T) {
-			pileCards := mat.GetPile(tc.holder).Cards()
+			pileCards := theMat.GetPile(tc.holder).Cards()
 			require.Len(t, pileCards, 2)
 			assert.Equal(t, tc.expectedTopCard, pileCards[1])
 		})
@@ -93,16 +93,16 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 }
 
 func TestMat_PlaceIntoNextPile_should_not_mute_the_mat(t *testing.T) {
-	mat := trick.NewMat()
+	theMat := mat.New()
 
-	mat.PlaceIntoNextPile(card("a card"))
+	theMat.PlaceIntoNextPile(card("a card"))
 
-	expectedMat := trick.NewMat()
-	assert.Equal(t, expectedMat, mat)
+	expectedMat := mat.New()
+	assert.Equal(t, expectedMat, theMat)
 }
 
 func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
-	mat := trick.NewMat().
+	theMat := mat.New().
 		PlaceIntoNextPile(card("First Pile, Bottom")).
 		PlaceIntoNextPile(card("Second Pile, Bottom")).
 		PlaceIntoNextPile(card("Third Pile, Bottom")).
@@ -110,7 +110,7 @@ func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
 		PlaceIntoNextPile(card("Second Pile, Top")).
 		PlaceIntoNextPile(card("Third Pile, Top"))
 
-	pile := mat.JoinWithPileInTheMiddle(trick.FirstPile)
+	pile := theMat.JoinWithPileInTheMiddle(mat.FirstPile)
 
 	expectedPile := deck.NewPile(
 		card("Second Pile, Top"),
@@ -125,24 +125,24 @@ func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
 }
 
 func TestPiles_should_return_piles_in_mat_with_each_holder(t *testing.T) {
-	mat := trick.NewMat()
+	theMat := mat.New()
 
-	piles := mat.Piles()
+	piles := theMat.Piles()
 
-	expectedPiles := []trick.PileInMat{
-		{trick.FirstPile, deck.NewPile()},
-		{trick.SecondPile, deck.NewPile()},
-		{trick.ThirdPile, deck.NewPile()},
+	expectedPiles := []mat.PileInMat{
+		{mat.FirstPile, deck.NewPile()},
+		{mat.SecondPile, deck.NewPile()},
+		{mat.ThirdPile, deck.NewPile()},
 	}
 	assert.Equal(t, expectedPiles, piles)
 }
 
-func newMatWithCards(numberOfCards int) trick.Mat {
-	mat := trick.NewMat()
+func newMatWithCards(numberOfCards int) mat.Mat {
+	theMat := mat.New()
 	for i := 0; i < numberOfCards; i++ {
-		mat = mat.PlaceIntoNextPile(card(fmt.Sprintf("card %v", i+1)))
+		theMat = theMat.PlaceIntoNextPile(card(fmt.Sprintf("card %v", i+1)))
 	}
-	return mat
+	return theMat
 }
 
 func card(name string) deck.Card {

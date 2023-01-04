@@ -1,4 +1,4 @@
-package trick
+package mat
 
 import "github.com/carloscasalar/card-guess/internal/deck"
 

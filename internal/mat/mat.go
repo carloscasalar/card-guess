@@ -1,4 +1,4 @@
-package trick
+package mat
 
 import "github.com/carloscasalar/card-guess/internal/deck"
 
@@ -7,10 +7,10 @@ type Mat struct {
 }
 
 func (m Mat) PlaceIntoNextPile(card deck.Card) Mat {
-	mat := m.copy()
-	nextPile := mat.nextPile()
-	mat.piles[nextPile] = mat.piles[nextPile].AddCard(card)
-	return mat
+	theMat := m.copy()
+	nextPile := theMat.nextPile()
+	theMat.piles[nextPile] = theMat.piles[nextPile].AddCard(card)
+	return theMat
 }
 
 func (m Mat) JoinWithPileInTheMiddle(holder PileHolder) deck.Pile {
@@ -58,7 +58,7 @@ func (m Mat) nextPile() PileHolder {
 	return lessCardPile
 }
 
-func NewMat() Mat {
+func New() Mat {
 	return Mat{
 		piles: map[PileHolder]deck.Pile{
 			FirstPile:  deck.NewPile(),

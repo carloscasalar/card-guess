@@ -1,4 +1,4 @@
-package trick
+package mat
 
 type PileHolder int
 

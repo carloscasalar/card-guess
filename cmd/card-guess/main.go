@@ -9,7 +9,7 @@ import (
 
 	"github.com/manifoldco/promptui"
 
-	"github.com/carloscasalar/card-guess/internal/trick"
+	"github.com/carloscasalar/card-guess/internal/mat"
 
 	"github.com/carloscasalar/card-guess/internal/deck"
 )
@@ -111,8 +111,8 @@ func takeTheFourthCard(pile deck.Pile) deck.Card {
 	return card
 }
 
-func splitIntoThreePiles(sample deck.Pile) (*trick.Mat, error) {
-	mat := trick.NewMat()
+func splitIntoThreePiles(sample deck.Pile) (*mat.Mat, error) {
+	mat := mat.New()
 	for {
 		var card deck.Card
 		var err error
@@ -128,7 +128,7 @@ func splitIntoThreePiles(sample deck.Pile) (*trick.Mat, error) {
 	return &mat, nil
 }
 
-func askForThePileWhereTheCardIs(piles []trick.PileInMat) (trick.PileHolder, error) {
+func askForThePileWhereTheCardIs(piles []mat.PileInMat) (mat.PileHolder, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ .Pile }}?",
 		Active:   "-> {{ .Pile | cyan }}",
