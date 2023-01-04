@@ -12,16 +12,9 @@ type Trick interface {
 	Cards() []deck.Card
 }
 
-type startingTrick struct {
-	cards []deck.Card
-}
-
-func (s startingTrick) Cards() []deck.Card {
-	return s.cards
-}
-
 func New() (Trick, error) {
 	dealer := deck.NewDealer()
+	dealer.ShuffleCards()
 	cards := make([]deck.Card, trickSampleSize)
 	for i := 0; i < trickSampleSize; i++ {
 		card, err := dealer.Deal()
@@ -32,4 +25,12 @@ func New() (Trick, error) {
 	}
 
 	return &startingTrick{cards}, nil
+}
+
+type startingTrick struct {
+	cards []deck.Card
+}
+
+func (s startingTrick) Cards() []deck.Card {
+	return s.cards
 }
