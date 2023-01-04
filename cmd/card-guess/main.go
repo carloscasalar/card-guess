@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+	lib "github.com/carloscasalar/card-guess/pkg/threepilestrick"
 
 	"github.com/manifoldco/promptui"
 
@@ -34,61 +34,49 @@ func main() {
 }
 
 func run(mustShuffle bool) error {
-	dealer := deck.NewDealer()
-	if mustShuffle {
-		dealer.ShuffleCards()
+	trick, err := lib.New(mustShuffle)
+	if err != nil {
+		return err
 	}
 
-	sample := deck.NewPile()
-	for i := 0; i < TrickSampleSize; i++ {
-		card, err := dealer.Deal()
-		if err != nil {
-			return fmt.Errorf("unexpected error while dealing the card %vth: %w", i+1, err)
-		}
-		sample = sample.AddCard(card)
-	}
-
-	fmt.Println(sample.String())
+	fmt.Println(trick.Sample().String())
 	fmt.Println("Pick a card from above and hold it in your mind.")
 	fmt.Println("Now I'll split the cards into three piles, watch your card.")
 	fmt.Println("Then press enter to continue")
 	_, _ = fmt.Scanln()
 
-	mat, err := splitIntoThreePiles(sample)
-	if err != nil {
-		return err
-	}
-
-	pileHolder, err := askForThePileWhereTheCardIs(piles(mat))
+	pileHolder, err := askForThePileWhereTheCardIs(piles(trick.Mat()))
 	if err != nil {
 		return err
 	}
 
 	fmt.Printf("I've put the pile you choosed, the %v, between the other two and splitted again into three piles:\n", pileHolder)
-	sample = mat.JoinWithPileInTheMiddle(pileHolder)
-	mat, err = splitIntoThreePiles(sample)
+	// FIXME: this is a smell telling Mat should not be exposed in the trick engine
+	sample := trick.Mat().JoinWithPileInTheMiddle(mat.PileHolder(pileHolder))
+	theMat, err := splitIntoThreePiles(sample)
 	if err != nil {
 		return err
 	}
-	pileHolder, err = askForThePileWhereTheCardIs(piles(mat))
+	pileHolder, err = askForThePileWhereTheCardIs(piles(theMat))
 	if err != nil {
 		return err
 	}
 
 	fmt.Printf("For the last time I've put the pile you choosed, the %v, between the other two and splitted again into three piles:\n", pileHolder)
-	sample = mat.JoinWithPileInTheMiddle(pileHolder)
-	mat, err = splitIntoThreePiles(sample)
+	// FIXME: this is a smell telling Mat should not be exposed in the trick engine
+	sample = theMat.JoinWithPileInTheMiddle(mat.PileHolder(pileHolder))
+	theMat, err = splitIntoThreePiles(sample)
 	if err != nil {
 		return err
 	}
-	pileHolder, err = askForThePileWhereTheCardIs(piles(mat))
+	pileHolder, err = askForThePileWhereTheCardIs(piles(theMat))
 	if err != nil {
 		return err
 	}
 
 	fmt.Print("Ok, your card is..")
 	simulateSuspense()
-	guessedCard := takeTheFourthCard(mat, pileHolder)
+	guessedCard := takeTheFourthCard(theMat, pileHolder)
 	fmt.Printf("... %v !\n", guessedCard)
 
 	return nil
@@ -103,18 +91,18 @@ func simulateSuspense() {
 	time.Sleep(suspenseTime)
 }
 
-func takeTheFourthCard(theMat threepilestrick.Mat, holder threepilestrick.PileHolder) threepilestrick.Card {
-	var pile threepilestrick.Pile
+func takeTheFourthCard(theMat lib.Mat, holder lib.PileHolder) lib.Card {
+	var pile lib.Pile
 	switch holder {
-	case threepilestrick.FirstPile:
+	case lib.FirstPile:
 		pile = theMat.FirstPile()
-	case threepilestrick.SecondPile:
+	case lib.SecondPile:
 		pile = theMat.SecondPile()
-	case threepilestrick.ThirdPile:
+	case lib.ThirdPile:
 		pile = theMat.ThirdPile()
 	}
 
-	var card threepilestrick.Card
+	var card lib.Card
 	const fourth = 4
 	for i := 0; i < fourth; i++ {
 		card, pile, _ = pile.DrawCard()
@@ -123,10 +111,10 @@ func takeTheFourthCard(theMat threepilestrick.Mat, holder threepilestrick.PileHo
 	return card
 }
 
-func splitIntoThreePiles(sample threepilestrick.Pile) (threepilestrick.Mat, error) {
-	mat := mat.New()
+func splitIntoThreePiles(sample lib.Pile) (lib.Mat, error) {
+	theMat := mat.New()
 	for {
-		var card threepilestrick.Card
+		var card lib.Card
 		var err error
 		card, sample, err = sample.DrawCard()
 		if err != nil {
@@ -135,12 +123,12 @@ func splitIntoThreePiles(sample threepilestrick.Pile) (threepilestrick.Mat, erro
 			}
 			return nil, err
 		}
-		mat = mat.PlaceIntoNextPile(card)
+		theMat = theMat.PlaceIntoNextPile(card)
 	}
-	return mat, nil
+	return theMat, nil
 }
 
-func askForThePileWhereTheCardIs(piles []pileInMat) (threepilestrick.PileHolder, error) {
+func askForThePileWhereTheCardIs(piles []pileInMat) (lib.PileHolder, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ .Pile }}?",
 		Active:   "-> {{ .Pile | cyan }}",
@@ -163,15 +151,15 @@ func askForThePileWhereTheCardIs(piles []pileInMat) (threepilestrick.PileHolder,
 	return piles[i].Holder, nil
 }
 
-func piles(aMat threepilestrick.Mat) []pileInMat {
+func piles(aMat lib.Mat) []pileInMat {
 	return []pileInMat{
-		{threepilestrick.FirstPile, aMat.FirstPile()},
-		{threepilestrick.SecondPile, aMat.SecondPile()},
-		{threepilestrick.ThirdPile, aMat.ThirdPile()},
+		{lib.FirstPile, aMat.FirstPile()},
+		{lib.SecondPile, aMat.SecondPile()},
+		{lib.ThirdPile, aMat.ThirdPile()},
 	}
 }
 
 type pileInMat struct {
-	Holder threepilestrick.PileHolder
-	Pile   threepilestrick.Pile
+	Holder lib.PileHolder
+	Pile   lib.Pile
 }

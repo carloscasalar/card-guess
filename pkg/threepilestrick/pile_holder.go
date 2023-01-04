@@ -1,11 +1,13 @@
 package threepilestrick
 
-type PileHolder int
+import "github.com/carloscasalar/card-guess/internal/mat"
+
+type PileHolder mat.PileHolder
 
 const (
-	FirstPile PileHolder = iota
-	SecondPile
-	ThirdPile
+	FirstPile  = PileHolder(mat.FirstPile)
+	SecondPile = PileHolder(mat.SecondPile)
+	ThirdPile  = PileHolder(mat.ThirdPile)
 )
 
 func (h PileHolder) String() string {

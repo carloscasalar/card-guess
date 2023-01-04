@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/carloscasalar/card-guess/internal/deck"
@@ -62,8 +60,8 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 		PlaceIntoNextPile(card("sixth card"))
 
 	topCardCases := map[string]struct {
-		pile            threepilestrick.Pile
-		expectedTopCard threepilestrick.Card
+		pile            deck.Pile
+		expectedTopCard deck.Card
 	}{
 		"fourth card should be on top of the first pile": {theMat.FirstPile(), card("fourth card")},
 		"fifth card should be on top of the second pile": {theMat.SecondPile(), card("fifth card")},
@@ -78,8 +76,8 @@ func TestMat_PlaceIntoNextPile_after_putting_six_cards(t *testing.T) {
 	}
 
 	bottomCardCases := map[string]struct {
-		pile            threepilestrick.Pile
-		expectedTopCard threepilestrick.Card
+		pile            deck.Pile
+		expectedTopCard deck.Card
 	}{
 		"fourth card should be at the bottom of the first pile": {theMat.FirstPile(), card("first card")},
 		"fifth card should be at the bottom of the second pile": {theMat.SecondPile(), card("second card")},
@@ -112,7 +110,7 @@ func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
 		PlaceIntoNextPile(card("Second Pile, Top")).
 		PlaceIntoNextPile(card("Third Pile, Top"))
 
-	pile := theMat.JoinWithPileInTheMiddle(threepilestrick.FirstPile)
+	pile := theMat.JoinWithPileInTheMiddle(mat.FirstPile)
 
 	expectedPile := deck.NewPile(
 		card("Second Pile, Top"),
@@ -126,7 +124,7 @@ func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
 	assert.Equal(t, expectedPile.String(), pile.String())
 }
 
-func newMatWithCards(numberOfCards int) threepilestrick.Mat {
+func newMatWithCards(numberOfCards int) mat.Mat {
 	theMat := mat.New()
 	for i := 0; i < numberOfCards; i++ {
 		theMat = theMat.PlaceIntoNextPile(card(fmt.Sprintf("card %v", i+1)))
@@ -134,7 +132,7 @@ func newMatWithCards(numberOfCards int) threepilestrick.Mat {
 	return theMat
 }
 
-func card(name string) threepilestrick.Card {
+func card(name string) deck.Card {
 	return &CardStub{name}
 }
 

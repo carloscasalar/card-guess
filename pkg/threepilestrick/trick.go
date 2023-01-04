@@ -1,6 +1,11 @@
 package threepilestrick
 
+import "github.com/carloscasalar/card-guess/internal/trick"
+
 type Trick interface {
-	Sample() Pile
-	Mat() Mat
+	trick.Trick
+}
+
+func New(shuffleBeforeInitialDraw bool) (Trick, error) {
+	return trick.New(shuffleBeforeInitialDraw)
 }

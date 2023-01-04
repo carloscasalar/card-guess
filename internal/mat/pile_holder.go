@@ -1,13 +1,11 @@
 package mat
 
-import "github.com/carloscasalar/card-guess/pkg/threepilestrick"
-
-type PileHolder threepilestrick.PileHolder
+type PileHolder int
 
 const (
-	FirstPile  = PileHolder(threepilestrick.FirstPile)
-	SecondPile = PileHolder(threepilestrick.SecondPile)
-	ThirdPile  = PileHolder(threepilestrick.ThirdPile)
+	FirstPile PileHolder = iota
+	SecondPile
+	ThirdPile
 )
 
 func (h PileHolder) nextPile() PileHolder {

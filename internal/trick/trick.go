@@ -3,19 +3,24 @@ package trick
 import (
 	"fmt"
 
-	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+	"github.com/carloscasalar/card-guess/internal/mat"
 
 	"github.com/carloscasalar/card-guess/internal/deck"
 )
 
+type Trick interface {
+	Sample() deck.Pile
+	Mat() mat.Mat
+}
+
 const trickSampleSize = 21
 
-func New(shuffleBeforeInitialDraw bool) (threepilestrick.Trick, error) {
+func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 	dealer := deck.NewDealer()
 	if shuffleBeforeInitialDraw {
 		dealer.ShuffleCards()
 	}
-	cards := make([]threepilestrick.Card, trickSampleSize)
+	cards := make([]deck.Card, trickSampleSize)
 	for i := 0; i < trickSampleSize; i++ {
 		card, err := dealer.Deal()
 		if err != nil {
@@ -34,14 +39,14 @@ func New(shuffleBeforeInitialDraw bool) (threepilestrick.Trick, error) {
 }
 
 type startingTrick struct {
-	sample threepilestrick.Pile
-	mat    threepilestrick.Mat
+	sample deck.Pile
+	mat    mat.Mat
 }
 
-func (s startingTrick) Sample() threepilestrick.Pile {
+func (s startingTrick) Sample() deck.Pile {
 	return s.sample
 }
 
-func (s startingTrick) Mat() threepilestrick.Mat {
+func (s startingTrick) Mat() mat.Mat {
 	return s.mat
 }

@@ -2,12 +2,19 @@ package mat
 
 import (
 	"github.com/carloscasalar/card-guess/internal/deck"
-	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
 )
 
-func New() threepilestrick.Mat {
+type Mat interface {
+	PlaceIntoNextPile(card deck.Card) Mat
+	JoinWithPileInTheMiddle(holder PileHolder) deck.Pile
+	FirstPile() deck.Pile
+	SecondPile() deck.Pile
+	ThirdPile() deck.Pile
+}
+
+func New() Mat {
 	return regularMat{
-		piles: map[PileHolder]threepilestrick.Pile{
+		piles: map[PileHolder]deck.Pile{
 			FirstPile:  deck.NewPile(),
 			SecondPile: deck.NewPile(),
 			ThirdPile:  deck.NewPile(),
@@ -16,18 +23,17 @@ func New() threepilestrick.Mat {
 }
 
 type regularMat struct {
-	piles map[PileHolder]threepilestrick.Pile
+	piles map[PileHolder]deck.Pile
 }
 
-func (m regularMat) PlaceIntoNextPile(card threepilestrick.Card) threepilestrick.Mat {
+func (m regularMat) PlaceIntoNextPile(card deck.Card) Mat {
 	theMat := m.copy()
 	nextPile := theMat.nextPile()
 	theMat.piles[nextPile] = theMat.piles[nextPile].AddCard(card)
 	return theMat
 }
 
-func (m regularMat) JoinWithPileInTheMiddle(pileHolder threepilestrick.PileHolder) threepilestrick.Pile {
-	holder := PileHolder(pileHolder)
+func (m regularMat) JoinWithPileInTheMiddle(holder PileHolder) deck.Pile {
 	firstHolder := holder.nextPile()
 	pile := m.piles[firstHolder].StackOnTopOf(m.piles[holder])
 	lastHolder := firstHolder.nextPile()
@@ -35,20 +41,20 @@ func (m regularMat) JoinWithPileInTheMiddle(pileHolder threepilestrick.PileHolde
 	return pile
 }
 
-func (m regularMat) FirstPile() threepilestrick.Pile {
+func (m regularMat) FirstPile() deck.Pile {
 	return m.piles[FirstPile]
 }
 
-func (m regularMat) SecondPile() threepilestrick.Pile {
+func (m regularMat) SecondPile() deck.Pile {
 	return m.piles[SecondPile]
 }
 
-func (m regularMat) ThirdPile() threepilestrick.Pile {
+func (m regularMat) ThirdPile() deck.Pile {
 	return m.piles[ThirdPile]
 }
 
 func (m regularMat) copy() regularMat {
-	piles := make(map[PileHolder]threepilestrick.Pile)
+	piles := make(map[PileHolder]deck.Pile)
 	piles[FirstPile] = m.piles[FirstPile]
 	piles[SecondPile] = m.piles[SecondPile]
 	piles[ThirdPile] = m.piles[ThirdPile]

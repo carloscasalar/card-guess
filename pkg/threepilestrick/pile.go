@@ -1,10 +1,7 @@
 package threepilestrick
 
+import "github.com/carloscasalar/card-guess/internal/deck"
+
 type Pile interface {
-	DrawCard() (Card, Pile, error)
-	AddCard(card Card) Pile
-	StackOnTopOf(Pile) Pile
-	Cards() []Card
-	Size() int
-	String() string
+	deck.Pile
 }

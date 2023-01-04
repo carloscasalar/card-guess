@@ -3,8 +3,6 @@ package deck_test
 import (
 	"testing"
 
-	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
-
 	"github.com/carloscasalar/card-guess/internal/deck"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -64,7 +62,7 @@ func (s *DealerSuite) Test_shuffled_cards_should_contain_different_in_different_
 	assert.Equal(s.T(), toMapOfCards(nonShuffledCards), toMapOfCards(shuffledCards))
 }
 
-func toMapOfCards(cardsDealt []threepilestrick.Card) map[string]bool {
+func toMapOfCards(cardsDealt []deck.Card) map[string]bool {
 	uniqueCardsDealt := map[string]bool{}
 	for _, card := range cardsDealt {
 		cardStr := card.String()
@@ -73,8 +71,8 @@ func toMapOfCards(cardsDealt []threepilestrick.Card) map[string]bool {
 	return uniqueCardsDealt
 }
 
-func dealCards(dealer deck.Dealer, numberOfCards int) ([]threepilestrick.Card, error) {
-	cardsDealt := make([]threepilestrick.Card, numberOfCards)
+func dealCards(dealer deck.Dealer, numberOfCards int) ([]deck.Card, error) {
+	cardsDealt := make([]deck.Card, numberOfCards)
 	for i := 0; i < numberOfCards; i++ {
 		card, err := dealer.Deal()
 		if err != nil {
