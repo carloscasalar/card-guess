@@ -112,7 +112,7 @@ func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
 		PlaceIntoNextPile(card("Second Pile, Top")).
 		PlaceIntoNextPile(card("Third Pile, Top"))
 
-	pile := theMat.JoinWithPileInTheMiddle(mat.FirstPile)
+	pile := theMat.JoinWithPileInTheMiddle(threepilestrick.FirstPile)
 
 	expectedPile := deck.NewPile(
 		card("Second Pile, Top"),
@@ -126,7 +126,7 @@ func TestMat_JoinWithPileInTheMiddle(t *testing.T) {
 	assert.Equal(t, expectedPile.String(), pile.String())
 }
 
-func newMatWithCards(numberOfCards int) mat.Mat {
+func newMatWithCards(numberOfCards int) threepilestrick.Mat {
 	theMat := mat.New()
 	for i := 0; i < numberOfCards; i++ {
 		theMat = theMat.PlaceIntoNextPile(card(fmt.Sprintf("card %v", i+1)))

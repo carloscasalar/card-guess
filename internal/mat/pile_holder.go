@@ -1,11 +1,13 @@
 package mat
 
-type PileHolder int
+import "github.com/carloscasalar/card-guess/pkg/threepilestrick"
+
+type PileHolder threepilestrick.PileHolder
 
 const (
-	FirstPile PileHolder = iota
-	SecondPile
-	ThirdPile
+	FirstPile  = PileHolder(threepilestrick.FirstPile)
+	SecondPile = PileHolder(threepilestrick.SecondPile)
+	ThirdPile  = PileHolder(threepilestrick.ThirdPile)
 )
 
 func (h PileHolder) nextPile() PileHolder {
@@ -13,13 +15,4 @@ func (h PileHolder) nextPile() PileHolder {
 		return FirstPile
 	}
 	return h + 1
-}
-
-func (h PileHolder) String() string {
-	descriptions := map[PileHolder]string{
-		FirstPile:  "First pile",
-		SecondPile: "Second pile",
-		ThirdPile:  "Third pile",
-	}
-	return descriptions[h]
 }

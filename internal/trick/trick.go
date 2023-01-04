@@ -5,8 +5,6 @@ import (
 
 	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
 
-	"github.com/carloscasalar/card-guess/internal/mat"
-
 	"github.com/carloscasalar/card-guess/internal/deck"
 )
 
@@ -14,7 +12,7 @@ const trickSampleSize = 21
 
 type Trick interface {
 	Sample() threepilestrick.Pile
-	Mat() mat.Mat
+	Mat() threepilestrick.Mat
 }
 
 func New(shuffleBeforeInitialDraw bool) (Trick, error) {
@@ -42,13 +40,13 @@ func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 
 type startingTrick struct {
 	sample threepilestrick.Pile
-	mat    mat.Mat
+	mat    threepilestrick.Mat
 }
 
 func (s startingTrick) Sample() threepilestrick.Pile {
 	return s.sample
 }
 
-func (s startingTrick) Mat() mat.Mat {
+func (s startingTrick) Mat() threepilestrick.Mat {
 	return s.mat
 }

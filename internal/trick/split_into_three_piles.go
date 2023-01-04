@@ -9,7 +9,7 @@ import (
 	"github.com/carloscasalar/card-guess/internal/mat"
 )
 
-func splitIntoThreePiles(sample threepilestrick.Pile) (*mat.Mat, error) {
+func splitIntoThreePiles(sample threepilestrick.Pile) (*threepilestrick.Mat, error) {
 	theMat := mat.New()
 	for {
 		var card threepilestrick.Card

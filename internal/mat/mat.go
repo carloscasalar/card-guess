@@ -5,15 +5,7 @@ import (
 	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
 )
 
-type Mat interface {
-	PlaceIntoNextPile(card threepilestrick.Card) Mat
-	JoinWithPileInTheMiddle(holder PileHolder) threepilestrick.Pile
-	FirstPile() threepilestrick.Pile
-	SecondPile() threepilestrick.Pile
-	ThirdPile() threepilestrick.Pile
-}
-
-func New() Mat {
+func New() threepilestrick.Mat {
 	return regularMat{
 		piles: map[PileHolder]threepilestrick.Pile{
 			FirstPile:  deck.NewPile(),
@@ -27,14 +19,15 @@ type regularMat struct {
 	piles map[PileHolder]threepilestrick.Pile
 }
 
-func (m regularMat) PlaceIntoNextPile(card threepilestrick.Card) Mat {
+func (m regularMat) PlaceIntoNextPile(card threepilestrick.Card) threepilestrick.Mat {
 	theMat := m.copy()
 	nextPile := theMat.nextPile()
 	theMat.piles[nextPile] = theMat.piles[nextPile].AddCard(card)
 	return theMat
 }
 
-func (m regularMat) JoinWithPileInTheMiddle(holder PileHolder) threepilestrick.Pile {
+func (m regularMat) JoinWithPileInTheMiddle(pileHolder threepilestrick.PileHolder) threepilestrick.Pile {
+	holder := PileHolder(pileHolder)
 	firstHolder := holder.nextPile()
 	pile := m.piles[firstHolder].StackOnTopOf(m.piles[holder])
 	lastHolder := firstHolder.nextPile()

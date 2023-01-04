@@ -103,14 +103,14 @@ func simulateSuspense() {
 	time.Sleep(suspenseTime)
 }
 
-func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) threepilestrick.Card {
+func takeTheFourthCard(theMat threepilestrick.Mat, holder threepilestrick.PileHolder) threepilestrick.Card {
 	var pile threepilestrick.Pile
 	switch holder {
-	case mat.FirstPile:
+	case threepilestrick.FirstPile:
 		pile = theMat.FirstPile()
-	case mat.SecondPile:
+	case threepilestrick.SecondPile:
 		pile = theMat.SecondPile()
-	case mat.ThirdPile:
+	case threepilestrick.ThirdPile:
 		pile = theMat.ThirdPile()
 	}
 
@@ -123,7 +123,7 @@ func takeTheFourthCard(theMat mat.Mat, holder mat.PileHolder) threepilestrick.Ca
 	return card
 }
 
-func splitIntoThreePiles(sample threepilestrick.Pile) (mat.Mat, error) {
+func splitIntoThreePiles(sample threepilestrick.Pile) (threepilestrick.Mat, error) {
 	mat := mat.New()
 	for {
 		var card threepilestrick.Card
@@ -140,7 +140,7 @@ func splitIntoThreePiles(sample threepilestrick.Pile) (mat.Mat, error) {
 	return mat, nil
 }
 
-func askForThePileWhereTheCardIs(piles []pileInMat) (mat.PileHolder, error) {
+func askForThePileWhereTheCardIs(piles []pileInMat) (threepilestrick.PileHolder, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ .Pile }}?",
 		Active:   "-> {{ .Pile | cyan }}",
@@ -163,15 +163,15 @@ func askForThePileWhereTheCardIs(piles []pileInMat) (mat.PileHolder, error) {
 	return piles[i].Holder, nil
 }
 
-func piles(aMat mat.Mat) []pileInMat {
+func piles(aMat threepilestrick.Mat) []pileInMat {
 	return []pileInMat{
-		{mat.FirstPile, aMat.FirstPile()},
-		{mat.SecondPile, aMat.SecondPile()},
-		{mat.ThirdPile, aMat.ThirdPile()},
+		{threepilestrick.FirstPile, aMat.FirstPile()},
+		{threepilestrick.SecondPile, aMat.SecondPile()},
+		{threepilestrick.ThirdPile, aMat.ThirdPile()},
 	}
 }
 
 type pileInMat struct {
-	Holder mat.PileHolder
+	Holder threepilestrick.PileHolder
 	Pile   threepilestrick.Pile
 }
