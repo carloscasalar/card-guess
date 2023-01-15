@@ -16,8 +16,6 @@ import (
 	"github.com/carloscasalar/card-guess/internal/deck"
 )
 
-const TrickSampleSize = 21
-
 func main() {
 	mustShuffle := flag.Bool("shuffle-before-initial-sample", true, "Tells if you want to shuffle before drawing the initial set of cards")
 	flag.Parse()
@@ -34,7 +32,7 @@ func main() {
 }
 
 func run(mustShuffle bool) error {
-	trick, err := lib.New(mustShuffle)
+	trick, err := lib.NewDeprecatedTrick(mustShuffle)
 	if err != nil {
 		return err
 	}
@@ -91,8 +89,8 @@ func simulateSuspense() {
 	time.Sleep(suspenseTime)
 }
 
-func takeTheFourthCard(theMat lib.Mat, holder lib.PileHolder) lib.Card {
-	var pile lib.Pile
+func takeTheFourthCard(theMat lib.Mat, holder lib.PileHolder) lib.DeprecatedCard {
+	var pile lib.DeprecatedPile
 	switch holder {
 	case lib.FirstPile:
 		pile = theMat.FirstPile()
@@ -102,7 +100,7 @@ func takeTheFourthCard(theMat lib.Mat, holder lib.PileHolder) lib.Card {
 		pile = theMat.ThirdPile()
 	}
 
-	var card lib.Card
+	var card lib.DeprecatedCard
 	const fourth = 4
 	for i := 0; i < fourth; i++ {
 		card, pile, _ = pile.DrawCard()
@@ -111,10 +109,10 @@ func takeTheFourthCard(theMat lib.Mat, holder lib.PileHolder) lib.Card {
 	return card
 }
 
-func splitIntoThreePiles(sample lib.Pile) (lib.Mat, error) {
+func splitIntoThreePiles(sample lib.DeprecatedPile) (lib.Mat, error) {
 	theMat := mat.New()
 	for {
-		var card lib.Card
+		var card lib.DeprecatedCard
 		var err error
 		card, sample, err = sample.DrawCard()
 		if err != nil {
@@ -130,10 +128,10 @@ func splitIntoThreePiles(sample lib.Pile) (lib.Mat, error) {
 
 func askForThePileWhereTheCardIs(piles []pileInMat) (lib.PileHolder, error) {
 	templates := &promptui.SelectTemplates{
-		Label:    "{{ .Pile }}?",
-		Active:   "-> {{ .Pile | cyan }}",
-		Inactive: "   {{ .Pile | cyan }}",
-		Selected: "{{ .Holder | red | cyan }}, {{ .Pile | cyan }}",
+		Label:    "{{ .DeprecatedPile }}?",
+		Active:   "-> {{ .DeprecatedPile | cyan }}",
+		Inactive: "   {{ .DeprecatedPile | cyan }}",
+		Selected: "{{ .Holder | red | cyan }}, {{ .DeprecatedPile | cyan }}",
 	}
 
 	prompt := promptui.Select{
@@ -161,5 +159,5 @@ func piles(aMat lib.Mat) []pileInMat {
 
 type pileInMat struct {
 	Holder lib.PileHolder
-	Pile   lib.Pile
+	Pile   lib.DeprecatedPile
 }
