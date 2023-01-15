@@ -13,6 +13,7 @@ type Trick interface {
 	FirstPile() Pile
 	SecondPile() Pile
 	ThirdPile() Pile
+	NextStep() CommandType
 }
 
 func New(shuffleBeforeInitialDraw bool) (Trick, error) {
@@ -25,6 +26,10 @@ func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 
 type initialState struct {
 	trick trick.Trick
+}
+
+func (i initialState) NextStep() CommandType {
+	return ChoosePileWhereYourCardIs
 }
 
 func (i initialState) Sample() Pile {
