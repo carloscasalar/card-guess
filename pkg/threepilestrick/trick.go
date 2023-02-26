@@ -13,7 +13,7 @@ type Trick interface {
 	FirstPile() Pile
 	SecondPile() Pile
 	ThirdPile() Pile
-	NextStep() CommandType
+	GuessMyCard() (*Card, error)
 }
 
 func New(shuffleBeforeInitialDraw bool) (Trick, error) {
@@ -28,8 +28,8 @@ type initialState struct {
 	trick trick.Trick
 }
 
-func (i initialState) NextStep() CommandType {
-	return ChoosePileWhereYourCardIs
+func (i initialState) GuessMyCard() (*Card, error) {
+	return nil, StillCannotGuessYourCard
 }
 
 func (i initialState) Sample() Pile {

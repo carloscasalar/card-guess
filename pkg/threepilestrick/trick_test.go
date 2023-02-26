@@ -30,20 +30,22 @@ func Test_NewTrick_should_provide_same_exact_cards_when_dont_shuffle_before_draw
 	assert.Equal(t, " A[♠]  2[♠]  3[♠]  4[♠]  5[♠]  6[♠]  7[♠]  8[♠]  9[♠] 10[♠]  J[♠]  Q[♠]  K[♠]  A[♥]  2[♥]  3[♥]  4[♥]  5[♥]  6[♥]  7[♥]  8[♥]", trickCardsStr)
 }
 
-func Test_NewTrick_should_contain_a_mat_with_initial_sample_split_into_three_piles(t *testing.T) {
+func Test_on_a_brand_new_trick(t *testing.T) {
 	aTrick, _ := threepilestrick.New(false)
 
-	assert.Equal(t, " 6[♥]  3[♥]  K[♠] 10[♠]  7[♠]  4[♠]  A[♠]", cardsInPile(aTrick.FirstPile()))
-	assert.Equal(t, " 7[♥]  4[♥]  A[♥]  J[♠]  8[♠]  5[♠]  2[♠]", cardsInPile(aTrick.SecondPile()))
-	assert.Equal(t, " 8[♥]  5[♥]  2[♥]  Q[♠]  9[♠]  6[♠]  3[♠]", cardsInPile(aTrick.ThirdPile()))
-}
+	t.Run("the mat should contain three initial piles of cards", func(t *testing.T) {
+		assert.Equal(t, " 6[♥]  3[♥]  K[♠] 10[♠]  7[♠]  4[♠]  A[♠]", cardsInPile(aTrick.FirstPile()))
+		assert.Equal(t, " 7[♥]  4[♥]  A[♥]  J[♠]  8[♠]  5[♠]  2[♠]", cardsInPile(aTrick.SecondPile()))
+		assert.Equal(t, " 8[♥]  5[♥]  2[♥]  Q[♠]  9[♠]  6[♠]  3[♠]", cardsInPile(aTrick.ThirdPile()))
+	})
 
-func Test_NextStep_first_step_should_be_to_choose_the_pile_where_your_card_is(t *testing.T) {
-	aTrick, _ := threepilestrick.New(false)
+	t.Run("should be impossible to guess the card", func(t *testing.T) {
+		_, err := aTrick.GuessMyCard()
 
-	nextStep := aTrick.NextStep()
+		require.Error(t, err)
+		assert.Equal(t, "still cannot guess your card, please tell me in which pile is it", err.Error())
+	})
 
-	assert.Equal(t, threepilestrick.ChoosePileWhereYourCardIs, nextStep)
 }
 
 func cardsInPile(pile threepilestrick.Pile) string {
