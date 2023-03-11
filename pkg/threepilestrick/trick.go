@@ -7,8 +7,6 @@ import (
 	"github.com/carloscasalar/card-guess/internal/mat"
 )
 
-const trickSampleSize = 21
-
 type Card string
 type Pile []Card
 
@@ -22,6 +20,7 @@ type Trick interface {
 }
 
 func New(shuffleBeforeInitialDraw bool) (Trick, error) {
+	const trickSampleSize = 21
 	dealer := deck.NewDealer()
 	if shuffleBeforeInitialDraw {
 		dealer.ShuffleCards()
@@ -41,14 +40,16 @@ func New(shuffleBeforeInitialDraw bool) (Trick, error) {
 		return nil, err
 	}
 	return trickState{
-		sample: sample,
-		mat:    *theMat,
+		sample:          sample,
+		mat:             *theMat,
+		pileChooseCount: 0,
 	}, nil
 }
 
 type trickState struct {
-	sample deck.Pile
-	mat    mat.Mat
+	sample          deck.Pile
+	mat             mat.Mat
+	pileChooseCount int
 }
 
 func (i trickState) GuessMyCard() (*Card, error) {
@@ -72,15 +73,58 @@ func (i trickState) ThirdPile() Pile {
 }
 
 func (i trickState) MyCardIsInPile(holder PileHolder) (Trick, error) {
-	allCardsWithChosenPileInTheMiddle := i.mat.JoinWithPileInTheMiddle(mat.PileHolder(holder))
+	const requiredChooseRounds = 3
+	pileChooseCount := i.pileChooseCount + 1
+	chosenPileHolder := mat.PileHolder(holder)
+	if pileChooseCount == requiredChooseRounds {
+		return &finalTrickState{sample: i.sample, mat: i.mat, pileWhereChosenCardIs: chosenPileHolder}, nil
+	}
+	allCardsWithChosenPileInTheMiddle := i.mat.JoinWithPileInTheMiddle(chosenPileHolder)
 	newMat, err := splitIntoThreePiles(allCardsWithChosenPileInTheMiddle)
 	if err != nil {
 		return nil, err
 	}
 	return trickState{
-		sample: i.sample,
-		mat:    *newMat,
+		sample:          i.sample,
+		mat:             *newMat,
+		pileChooseCount: pileChooseCount,
 	}, nil
+}
+
+type finalTrickState struct {
+	sample                deck.Pile
+	mat                   mat.Mat
+	pileWhereChosenCardIs mat.PileHolder
+}
+
+func (f finalTrickState) Sample() Pile {
+	return pileToSerializablePile(f.sample)
+}
+
+func (f finalTrickState) FirstPile() Pile {
+	return pileToSerializablePile(f.mat.FirstPile())
+}
+
+func (f finalTrickState) SecondPile() Pile {
+	return pileToSerializablePile(f.mat.SecondPile())
+}
+
+func (f finalTrickState) ThirdPile() Pile {
+	return pileToSerializablePile(f.mat.ThirdPile())
+}
+
+func (f finalTrickState) GuessMyCard() (*Card, error) {
+	const positionWhereCardIsAfterThreeSplits = 4
+	card, err := f.mat.CardFromPile(f.pileWhereChosenCardIs, positionWhereCardIsAfterThreeSplits)
+	if err != nil {
+		return nil, err
+	}
+	theCard := Card(card.String())
+	return &theCard, nil
+}
+
+func (f finalTrickState) MyCardIsInPile(holder PileHolder) (Trick, error) {
+	panic("implement me")
 }
 
 func pileToSerializablePile(pile deck.Pile) Pile {

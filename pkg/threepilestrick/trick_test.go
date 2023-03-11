@@ -47,17 +47,17 @@ func Test_on_a_brand_new_trick(t *testing.T) {
 	})
 
 	t.Run("being the card 10[♠], after telling it is in the first pile", func(t *testing.T) {
-		newTrickState, err := aTrick.MyCardIsInPile(threepilestrick.FirstPile)
+		trickState, err := aTrick.MyCardIsInPile(threepilestrick.FirstPile)
 		require.NoError(t, err)
 
 		t.Run("the trick should make a new pile with the first pile in the middle and deal three piles again", func(t *testing.T) {
-			assert.Equal(t, " 9[♠]  5[♥]  4[♠]  K[♠]  2[♠]  J[♠]  7[♥]", cardsInPile(newTrickState.FirstPile()))
-			assert.Equal(t, " 6[♠]  2[♥]  A[♠] 10[♠]  6[♥]  8[♠]  4[♥]", cardsInPile(newTrickState.SecondPile()))
-			assert.Equal(t, " 3[♠]  Q[♠]  8[♥]  7[♠]  3[♥]  5[♠]  A[♥]", cardsInPile(newTrickState.ThirdPile()))
+			assert.Equal(t, " 9[♠]  5[♥]  4[♠]  K[♠]  2[♠]  J[♠]  7[♥]", cardsInPile(trickState.FirstPile()))
+			assert.Equal(t, " 6[♠]  2[♥]  A[♠] 10[♠]  6[♥]  8[♠]  4[♥]", cardsInPile(trickState.SecondPile()))
+			assert.Equal(t, " 3[♠]  Q[♠]  8[♥]  7[♠]  3[♥]  5[♠]  A[♥]", cardsInPile(trickState.ThirdPile()))
 		})
 
 		t.Run("should be impossible to guess the card yet", func(t *testing.T) {
-			_, err := aTrick.GuessMyCard()
+			_, err := trickState.GuessMyCard()
 
 			require.Error(t, err)
 			assert.Equal(t, "still cannot guess your card, please tell me in which pile is it", err.Error())
@@ -76,10 +76,30 @@ func Test_on_a_brand_new_trick(t *testing.T) {
 		})
 
 		t.Run("should be impossible to guess the card yet", func(t *testing.T) {
-			_, err := aTrick.GuessMyCard()
+			_, err := trickState.GuessMyCard()
 
 			require.Error(t, err)
 			assert.Equal(t, "still cannot guess your card, please tell me in which pile is it", err.Error())
+		})
+	})
+
+	t.Run("being the card 10[♠], after telling it is in the first pile and after that, in the second and after that, again in the second pile", func(t *testing.T) {
+		trickAfterFirstChoice, _ := aTrick.MyCardIsInPile(threepilestrick.FirstPile)
+		trickAfterSecondChoice, _ := trickAfterFirstChoice.MyCardIsInPile(threepilestrick.SecondPile)
+		trickState, err := trickAfterSecondChoice.MyCardIsInPile(threepilestrick.SecondPile)
+		require.NoError(t, err)
+
+		t.Run("should guess that the card is 10[♠]", func(t *testing.T) {
+			card, err := trickState.GuessMyCard()
+
+			require.NoError(t, err)
+			assert.Equal(t, threepilestrick.Card("10[♠]"), *card)
+		})
+
+		t.Run("there is no need of join and split the cards so piles should stay the same", func(t *testing.T) {
+			assert.Equal(t, " 2[♠]  5[♥]  8[♠]  A[♠]  A[♥]  7[♠]  3[♠]", cardsInPile(trickState.FirstPile()))
+			assert.Equal(t, " J[♠]  4[♠]  4[♥] 10[♠]  6[♠]  3[♥]  Q[♠]", cardsInPile(trickState.SecondPile()))
+			assert.Equal(t, " 7[♥]  K[♠]  9[♠]  6[♥]  2[♥]  5[♠]  8[♥]", cardsInPile(trickState.ThirdPile()))
 		})
 	})
 }

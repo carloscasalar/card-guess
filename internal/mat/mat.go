@@ -10,6 +10,7 @@ type Mat interface {
 	FirstPile() deck.Pile
 	SecondPile() deck.Pile
 	ThirdPile() deck.Pile
+	CardFromPile(holder PileHolder, position int) (deck.Card, error)
 }
 
 func New() Mat {
@@ -51,6 +52,19 @@ func (m regularMat) SecondPile() deck.Pile {
 
 func (m regularMat) ThirdPile() deck.Pile {
 	return m.piles[ThirdPile]
+}
+
+func (m regularMat) CardFromPile(holder PileHolder, position int) (deck.Card, error) {
+	var card deck.Card
+	var err error
+	pile := m.piles[holder]
+	for i := 0; i < position; i++ {
+		card, pile, err = pile.DrawCard()
+		if err != nil {
+			return nil, err
+		}
+	}
+	return card, nil
 }
 
 func (m regularMat) copy() regularMat {
