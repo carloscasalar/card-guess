@@ -105,6 +105,27 @@ func Test_choosing_10_pikes(t *testing.T) {
 			assert.Equal(t, " J[♠]  4[♠]  4[♥] 10[♠]  6[♠]  3[♥]  Q[♠]", cardsInPile(trickState.SecondPile()))
 			assert.Equal(t, " 7[♥]  K[♠]  9[♠]  6[♥]  2[♥]  5[♠]  8[♥]", cardsInPile(trickState.ThirdPile()))
 		})
+
+		t.Run("choosing the pile again should not change the trick state at all", func(t *testing.T) {
+			stateAfterChoose, err := trickState.MyCardIsInPile(threepilestrick.SecondPile)
+			require.NoError(t, err)
+			assert.Equal(t, " 2[♠]  5[♥]  8[♠]  A[♠]  A[♥]  7[♠]  3[♠]", cardsInPile(stateAfterChoose.FirstPile()))
+			assert.Equal(t, " J[♠]  4[♠]  4[♥] 10[♠]  6[♠]  3[♥]  Q[♠]", cardsInPile(stateAfterChoose.SecondPile()))
+			assert.Equal(t, " 7[♥]  K[♠]  9[♠]  6[♥]  2[♥]  5[♠]  8[♥]", cardsInPile(stateAfterChoose.ThirdPile()))
+			assert.Equal(t, cardsInPile(trickState.Sample()), cardsInPile(stateAfterChoose.Sample()))
+		})
+
+		t.Run("choosing the first pile is a lie", func(t *testing.T) {
+			_, err := trickState.MyCardIsInPile(threepilestrick.FirstPile)
+			require.Error(t, err)
+			assert.Equal(t, "i know which is your card, ask me to guess it instead", err.Error())
+		})
+
+		t.Run("choosing the third pile is a lie", func(t *testing.T) {
+			_, err := trickState.MyCardIsInPile(threepilestrick.ThirdPile)
+			require.Error(t, err)
+			assert.Equal(t, "i know which is your card, ask me to guess it instead", err.Error())
+		})
 	})
 }
 

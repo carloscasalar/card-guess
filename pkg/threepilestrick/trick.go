@@ -124,7 +124,10 @@ func (f finalTrickState) GuessMyCard() (*Card, error) {
 }
 
 func (f finalTrickState) MyCardIsInPile(holder PileHolder) (Trick, error) {
-	panic("implement me")
+	if mat.PileHolder(holder) != f.pileWhereChosenCardIs {
+		return nil, ErrAskMeToGuessTheCardInstead
+	}
+	return f, nil
 }
 
 func pileToSerializablePile(pile deck.Pile) Pile {
