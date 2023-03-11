@@ -39,14 +39,18 @@ func Test_on_a_brand_new_trick(t *testing.T) {
 		assert.Equal(t, " 8[♥]  5[♥]  2[♥]  Q[♠]  9[♠]  6[♠]  3[♠]", cardsInPile(aTrick.ThirdPile()))
 	})
 
-	t.Run("should be impossible to guess the card", func(t *testing.T) {
+	t.Run("should be impossible to guess the card yet", func(t *testing.T) {
 		_, err := aTrick.GuessMyCard()
 
 		require.Error(t, err)
 		assert.Equal(t, "still cannot guess your card, please tell me in which pile is it", err.Error())
 	})
+}
 
-	t.Run("being the card 10[♠], after telling it is in the first pile", func(t *testing.T) {
+func Test_choosing_10_pikes(t *testing.T) {
+	aTrick, _ := threepilestrick.New(false)
+
+	t.Run("after telling it is in the first pile", func(t *testing.T) {
 		trickState, err := aTrick.MyCardIsInPile(threepilestrick.FirstPile)
 		require.NoError(t, err)
 
@@ -64,7 +68,7 @@ func Test_on_a_brand_new_trick(t *testing.T) {
 		})
 	})
 
-	t.Run("being the card 10[♠], after telling it is in the first pile and after that, in the second", func(t *testing.T) {
+	t.Run("after telling it is in the first pile and after that, in the second", func(t *testing.T) {
 		trickAfterFirstChoice, _ := aTrick.MyCardIsInPile(threepilestrick.FirstPile)
 		trickState, err := trickAfterFirstChoice.MyCardIsInPile(threepilestrick.SecondPile)
 		require.NoError(t, err)
@@ -83,7 +87,7 @@ func Test_on_a_brand_new_trick(t *testing.T) {
 		})
 	})
 
-	t.Run("being the card 10[♠], after telling it is in the first pile and after that, in the second and after that, again in the second pile", func(t *testing.T) {
+	t.Run("after telling it is in the first pile and after that, in the second and after that, again in the second pile", func(t *testing.T) {
 		trickAfterFirstChoice, _ := aTrick.MyCardIsInPile(threepilestrick.FirstPile)
 		trickAfterSecondChoice, _ := trickAfterFirstChoice.MyCardIsInPile(threepilestrick.SecondPile)
 		trickState, err := trickAfterSecondChoice.MyCardIsInPile(threepilestrick.SecondPile)
