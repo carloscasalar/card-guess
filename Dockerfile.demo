@@ -22,7 +22,7 @@ RUN --mount=target=. \
     go build -ldflags="-w -s" -o /app/main ./cmd/card-guess/*.go
 
 # Import the binary from build stage
-FROM ghcr.io/charmbracelet/vhs:latest as prd
+FROM ghcr.io/charmbracelet/vhs:v0.2.0 as prd
 COPY --from=build /app/main /app/main
 # this is the numeric version of user nonroot:nonroot to check runAsNonRoot in kubernetes
 USER 65532:65532

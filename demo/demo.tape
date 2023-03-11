@@ -8,7 +8,7 @@ Set Height 400
 
 # Type a command in the terminal.
 Hide
-Type "echo 'I will choose 6[Heart] as my card shhhh...'"
+Type "echo 'I will choose 3[Pikes] as my card shhhh...'"
 Show
 Enter
 Hide
