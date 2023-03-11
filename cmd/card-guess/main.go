@@ -1,19 +1,15 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
-	lib "github.com/carloscasalar/card-guess/pkg/threepilestrick"
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
 
 	"github.com/manifoldco/promptui"
-
-	"github.com/carloscasalar/card-guess/internal/mat"
-
-	"github.com/carloscasalar/card-guess/internal/deck"
 )
 
 func main() {
@@ -32,50 +28,54 @@ func main() {
 }
 
 func run(mustShuffle bool) error {
-	trick, err := lib.NewDeprecatedTrick(mustShuffle)
+	trick, err := threepilestrick.New(mustShuffle)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(trick.Sample().String())
+	fmt.Println(cardListString(trick.Sample()))
 	fmt.Println("Pick a card from above and hold it in your mind.")
 	fmt.Println("Now I'll split the cards into three piles, watch your card.")
 	fmt.Println("Then press enter to continue")
 	_, _ = fmt.Scanln()
 
-	pileHolder, err := askForThePileWhereTheCardIs(piles(trick.Mat()))
+	pileHolder, err := askForThePileWhereTheCardIs(piles(trick))
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("I've put the pile you choosed, the %v, between the other two and splitted again into three piles:\n", pileHolder)
-	// FIXME: this is a smell telling Mat should not be exposed in the trick engine
-	sample := trick.Mat().JoinWithPileInTheMiddle(mat.PileHolder(pileHolder))
-	theMat, err := splitIntoThreePiles(sample)
+	fmt.Printf("I've put the pile you choose, the %v, between the other two and split it again into three piles:\n", pileHolder)
+
+	trick, err = trick.MyCardIsInPile(pileHolder)
 	if err != nil {
 		return err
 	}
-	pileHolder, err = askForThePileWhereTheCardIs(piles(theMat))
+	pileHolder, err = askForThePileWhereTheCardIs(piles(trick))
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("For the last time I've put the pile you choosed, the %v, between the other two and splitted again into three piles:\n", pileHolder)
-	// FIXME: this is a smell telling Mat should not be exposed in the trick engine
-	sample = theMat.JoinWithPileInTheMiddle(mat.PileHolder(pileHolder))
-	theMat, err = splitIntoThreePiles(sample)
+	fmt.Printf("For the last time I've put the pile you choose, the %v, between the other two and split it again into three piles:\n", pileHolder)
+	trick, err = trick.MyCardIsInPile(pileHolder)
 	if err != nil {
 		return err
 	}
-	pileHolder, err = askForThePileWhereTheCardIs(piles(theMat))
+	pileHolder, err = askForThePileWhereTheCardIs(piles(trick))
+	if err != nil {
+		return err
+	}
+	trick, err = trick.MyCardIsInPile(pileHolder)
 	if err != nil {
 		return err
 	}
 
 	fmt.Print("Ok, your card is..")
 	simulateSuspense()
-	guessedCard := takeTheFourthCard(theMat, pileHolder)
-	fmt.Printf("... %v !\n", guessedCard)
+	guessedCard, err := trick.GuessMyCard()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("... %v !\n", *guessedCard)
 
 	return nil
 }
@@ -89,49 +89,12 @@ func simulateSuspense() {
 	time.Sleep(suspenseTime)
 }
 
-func takeTheFourthCard(theMat lib.Mat, holder lib.PileHolder) lib.DeprecatedCard {
-	var pile lib.DeprecatedPile
-	switch holder {
-	case lib.FirstPile:
-		pile = theMat.FirstPile()
-	case lib.SecondPile:
-		pile = theMat.SecondPile()
-	case lib.ThirdPile:
-		pile = theMat.ThirdPile()
-	}
-
-	var card lib.DeprecatedCard
-	const fourth = 4
-	for i := 0; i < fourth; i++ {
-		card, pile, _ = pile.DrawCard()
-	}
-
-	return card
-}
-
-func splitIntoThreePiles(sample lib.DeprecatedPile) (lib.Mat, error) {
-	theMat := mat.New()
-	for {
-		var card lib.DeprecatedCard
-		var err error
-		card, sample, err = sample.DrawCard()
-		if err != nil {
-			if errors.Is(err, deck.ErrNoMoreCardsInThePile) {
-				break
-			}
-			return nil, err
-		}
-		theMat = theMat.PlaceIntoNextPile(card)
-	}
-	return theMat, nil
-}
-
-func askForThePileWhereTheCardIs(piles []pileInMat) (lib.PileHolder, error) {
+func askForThePileWhereTheCardIs(piles []pileInMat) (threepilestrick.PileHolder, error) {
 	templates := &promptui.SelectTemplates{
-		Label:    "{{ .DeprecatedPile }}?",
-		Active:   "-> {{ .DeprecatedPile | cyan }}",
-		Inactive: "   {{ .DeprecatedPile | cyan }}",
-		Selected: "{{ .Holder | red | cyan }}, {{ .DeprecatedPile | cyan }}",
+		Label:    "{{ .Pile }}?",
+		Active:   "-> {{ .Pile | cyan }}",
+		Inactive: "   {{ .Pile | cyan }}",
+		Selected: "{{ .Holder | red | cyan }}, {{ .Pile | cyan }}",
 	}
 
 	prompt := promptui.Select{
@@ -149,15 +112,23 @@ func askForThePileWhereTheCardIs(piles []pileInMat) (lib.PileHolder, error) {
 	return piles[i].Holder, nil
 }
 
-func piles(aMat lib.Mat) []pileInMat {
+func piles(trick threepilestrick.Trick) []pileInMat {
 	return []pileInMat{
-		{lib.FirstPile, aMat.FirstPile()},
-		{lib.SecondPile, aMat.SecondPile()},
-		{lib.ThirdPile, aMat.ThirdPile()},
+		{threepilestrick.FirstPile, trick.FirstPile()},
+		{threepilestrick.SecondPile, trick.SecondPile()},
+		{threepilestrick.ThirdPile, trick.ThirdPile()},
 	}
 }
 
 type pileInMat struct {
-	Holder lib.PileHolder
-	Pile   lib.DeprecatedPile
+	Holder threepilestrick.PileHolder
+	Pile   threepilestrick.Pile
+}
+
+func cardListString(pile threepilestrick.Pile) string {
+	cardStrings := make([]string, 0)
+	for _, card := range pile {
+		cardStrings = append(cardStrings, string(card))
+	}
+	return strings.Join(cardStrings, " ")
 }
