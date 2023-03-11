@@ -1,10 +1,11 @@
 package trick_test
 
 import (
-	"github.com/carloscasalar/card-guess/internal/deck"
-	"github.com/carloscasalar/card-guess/internal/trick"
 	"strings"
 	"testing"
+
+	"github.com/carloscasalar/card-guess/internal/deck"
+	"github.com/carloscasalar/card-guess/internal/trick"
 
 	"github.com/stretchr/testify/require"
 
@@ -41,7 +42,7 @@ func Test_NewTrick_should_contain_a_mat_with_initial_sample_split_into_three_pil
 }
 
 func cardsInPile(pile deck.Pile) string {
-	var cardStrings []string
+	cardStrings := make([]string, 0)
 	for _, card := range pile.Cards() {
 		cardStrings = append(cardStrings, card.String())
 	}

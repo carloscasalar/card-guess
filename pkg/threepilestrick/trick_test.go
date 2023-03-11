@@ -63,11 +63,10 @@ func Test_on_a_brand_new_trick(t *testing.T) {
 			assert.Equal(t, "still cannot guess your card, please tell me in which pile is it", err.Error())
 		})
 	})
-
 }
 
 func cardsInPile(pile threepilestrick.Pile) string {
-	var cardStrings []string
+	cardStrings := make([]string, 0)
 	for _, card := range pile {
 		cardStrings = append(cardStrings, string(card))
 	}

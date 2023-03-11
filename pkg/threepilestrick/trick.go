@@ -52,7 +52,7 @@ type trickState struct {
 }
 
 func (i trickState) GuessMyCard() (*Card, error) {
-	return nil, StillCannotGuessYourCard
+	return nil, ErrStillCannotGuessYourCard
 }
 
 func (i trickState) Sample() Pile {
@@ -84,7 +84,7 @@ func (i trickState) MyCardIsInPile(holder PileHolder) (Trick, error) {
 }
 
 func pileToSerializablePile(pile deck.Pile) Pile {
-	var cards Pile
+	cards := make([]Card, 0)
 	for _, card := range pile.Cards() {
 		cards = append(cards, Card(card.String()))
 	}
