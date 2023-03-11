@@ -8,6 +8,7 @@ import (
 	"github.com/carloscasalar/card-guess/internal/deck"
 )
 
+// Trick Represents the trick state. Deprecated, use threepilestrick.Trick instead
 type Trick interface {
 	Sample() deck.Pile
 	Mat() mat.Mat
