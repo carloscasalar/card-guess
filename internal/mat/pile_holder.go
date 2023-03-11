@@ -14,12 +14,3 @@ func (h PileHolder) nextPile() PileHolder {
 	}
 	return h + 1
 }
-
-func (h PileHolder) String() string {
-	descriptions := map[PileHolder]string{
-		FirstPile:  "First pile",
-		SecondPile: "Second pile",
-		ThirdPile:  "Third pile",
-	}
-	return descriptions[h]
-}

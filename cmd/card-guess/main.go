@@ -1,20 +1,16 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
+	"github.com/carloscasalar/card-guess/pkg/threepilestrick"
+
 	"github.com/manifoldco/promptui"
-
-	"github.com/carloscasalar/card-guess/internal/mat"
-
-	"github.com/carloscasalar/card-guess/internal/deck"
 )
-
-const TrickSampleSize = 21
 
 func main() {
 	mustShuffle := flag.Bool("shuffle-before-initial-sample", true, "Tells if you want to shuffle before drawing the initial set of cards")
@@ -32,62 +28,54 @@ func main() {
 }
 
 func run(mustShuffle bool) error {
-	dealer := deck.NewDealer()
-	if mustShuffle {
-		dealer.ShuffleCards()
+	trick, err := threepilestrick.New(mustShuffle)
+	if err != nil {
+		return err
 	}
 
-	sample := deck.NewPile()
-	for i := 0; i < TrickSampleSize; i++ {
-		card, err := dealer.Deal()
-		if err != nil {
-			return fmt.Errorf("unexpected error while dealing the card %vth: %w", i+1, err)
-		}
-		sample = sample.AddCard(card)
-	}
-
-	fmt.Println(sample.String())
+	fmt.Println(cardListString(trick.Sample()))
 	fmt.Println("Pick a card from above and hold it in your mind.")
 	fmt.Println("Now I'll split the cards into three piles, watch your card.")
 	fmt.Println("Then press enter to continue")
 	_, _ = fmt.Scanln()
 
-	mat, err := splitIntoThreePiles(sample)
+	pileHolder, err := askForThePileWhereTheCardIs(piles(trick))
 	if err != nil {
 		return err
 	}
 
-	pileHolder, err := askForThePileWhereTheCardIs(mat.Piles())
+	fmt.Printf("I've put the pile you choose, the %v, between the other two and split it again into three piles:\n", pileHolder)
+
+	trick, err = trick.MyCardIsInPile(pileHolder)
+	if err != nil {
+		return err
+	}
+	pileHolder, err = askForThePileWhereTheCardIs(piles(trick))
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("I've put the pile you choosed, the %v, between the other two and splitted again into three piles:\n", pileHolder)
-	sample = mat.JoinWithPileInTheMiddle(pileHolder)
-	mat, err = splitIntoThreePiles(sample)
+	fmt.Printf("For the last time I've put the pile you choose, the %v, between the other two and split it again into three piles:\n", pileHolder)
+	trick, err = trick.MyCardIsInPile(pileHolder)
 	if err != nil {
 		return err
 	}
-	pileHolder, err = askForThePileWhereTheCardIs(mat.Piles())
+	pileHolder, err = askForThePileWhereTheCardIs(piles(trick))
 	if err != nil {
 		return err
 	}
-
-	fmt.Printf("For the last time I've put the pile you choosed, the %v, between the other two and splitted again into three piles:\n", pileHolder)
-	sample = mat.JoinWithPileInTheMiddle(pileHolder)
-	mat, err = splitIntoThreePiles(sample)
-	if err != nil {
-		return err
-	}
-	pileHolder, err = askForThePileWhereTheCardIs(mat.Piles())
+	trick, err = trick.MyCardIsInPile(pileHolder)
 	if err != nil {
 		return err
 	}
 
 	fmt.Print("Ok, your card is..")
 	simulateSuspense()
-	guessedCard := takeTheFourthCard(mat.GetPile(pileHolder))
-	fmt.Printf("... %v !\n", guessedCard)
+	guessedCard, err := trick.GuessMyCard()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("... %v !\n", *guessedCard)
 
 	return nil
 }
@@ -101,34 +89,7 @@ func simulateSuspense() {
 	time.Sleep(suspenseTime)
 }
 
-func takeTheFourthCard(pile deck.Pile) deck.Card {
-	var card deck.Card
-	const fourth = 4
-	for i := 0; i < fourth; i++ {
-		card, pile, _ = pile.DrawCard()
-	}
-
-	return card
-}
-
-func splitIntoThreePiles(sample deck.Pile) (*mat.Mat, error) {
-	mat := mat.New()
-	for {
-		var card deck.Card
-		var err error
-		card, sample, err = sample.DrawCard()
-		if err != nil {
-			if errors.Is(err, deck.ErrNoMoreCardsInThePile) {
-				break
-			}
-			return nil, err
-		}
-		mat = mat.PlaceIntoNextPile(card)
-	}
-	return &mat, nil
-}
-
-func askForThePileWhereTheCardIs(piles []mat.PileInMat) (mat.PileHolder, error) {
+func askForThePileWhereTheCardIs(piles []pileInMat) (threepilestrick.PileHolder, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ .Pile }}?",
 		Active:   "-> {{ .Pile | cyan }}",
@@ -149,4 +110,25 @@ func askForThePileWhereTheCardIs(piles []mat.PileInMat) (mat.PileHolder, error) 
 	}
 
 	return piles[i].Holder, nil
+}
+
+func piles(trick threepilestrick.Trick) []pileInMat {
+	return []pileInMat{
+		{threepilestrick.FirstPile, trick.FirstPile()},
+		{threepilestrick.SecondPile, trick.SecondPile()},
+		{threepilestrick.ThirdPile, trick.ThirdPile()},
+	}
+}
+
+type pileInMat struct {
+	Holder threepilestrick.PileHolder
+	Pile   threepilestrick.Pile
+}
+
+func cardListString(pile threepilestrick.Pile) string {
+	cardStrings := make([]string, 0)
+	for _, card := range pile {
+		cardStrings = append(cardStrings, string(card))
+	}
+	return strings.Join(cardStrings, " ")
 }

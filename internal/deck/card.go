@@ -1,6 +1,8 @@
 package deck
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Card interface {
 	String() string
