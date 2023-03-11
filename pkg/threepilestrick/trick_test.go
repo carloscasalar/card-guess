@@ -46,7 +46,7 @@ func Test_on_a_brand_new_trick(t *testing.T) {
 		assert.Equal(t, "still cannot guess your card, please tell me in which pile is it", err.Error())
 	})
 
-	t.Run("being the card J[♠], after telling it is in the first pile", func(t *testing.T) {
+	t.Run("being the card 10[♠], after telling it is in the first pile", func(t *testing.T) {
 		newTrickState, err := aTrick.MyCardIsInPile(threepilestrick.FirstPile)
 		require.NoError(t, err)
 
